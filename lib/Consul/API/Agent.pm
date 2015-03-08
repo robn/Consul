@@ -44,6 +44,13 @@ sub self {
     croak "not yet implemented";
 }
 
+sub maintenance {
+    my ($self, $enable, %args) = @_;
+    croak 'usage: $agent->maintenance($enable, [%args])' if grep { !defined } ($enable);
+    $$self->api_exec($$self->_agent_endpoint."/maintenance", 'PUT', enable => ($enable ? "true" : "false"), %args);
+    return;
+}
+
 sub join {
     my ($self, $address, %args) = @_;
     croak 'usage: $agent->join($address, [%args])' if grep { !defined } ($address);
@@ -104,6 +111,13 @@ sub deregister_service {
     my ($self, $service_id, %args) = @_;
     croak 'usage: $agent->deregister_service($check_id, [%args])' if grep { !defined } ($service_id);
     $$self->api_exec($$self->_agent_endpoint."/service/deregister/".$service_id, 'GET', %args);
+    return;
+}
+
+sub maintenance_service {
+    my ($self, $service_id, $enable, %args) = @_;
+    croak 'usage: $agent->maintenance_service($service_id, $enable, [%args])' if grep { !defined } ($service_id, $enable);
+    $$self->api_exec($$self->_agent_endpoint."/service/maintenance/".$service_id, 'PUT', enable => ($enable ? "true" : "false"), %args);
     return;
 }
 
