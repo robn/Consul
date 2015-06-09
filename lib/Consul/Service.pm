@@ -1,6 +1,6 @@
 package Consul::Service;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Moo;
 use Types::Standard qw(Str Int ArrayRef);

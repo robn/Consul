@@ -1,6 +1,6 @@
 package Consul::API::Session;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Moo::Role;
 use Types::Standard qw(Str);

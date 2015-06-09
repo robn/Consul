@@ -2,7 +2,7 @@ package Consul;
 
 # ABSTRACT: Client library for consul
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use HTTP::Tiny 0.014;
 use URI::Escape qw(uri_escape);
