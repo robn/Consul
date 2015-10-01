@@ -100,23 +100,23 @@ sub fail_check {
     return;
 }
 
-sub register_service {
+sub service_register {
     my ($self, $service, %args) = @_;
-    croak 'usage: $agent->register_service($service, [%args])' if grep { !defined } ($service);
+    croak 'usage: $agent->service_register($service, [%args])' if grep { !defined } ($service);
     $$self->api_exec($$self->_agent_endpoint."/service/register", 'PUT', %args, _content => $service->to_json);
     return;
 }
 
 sub deregister_service {
     my ($self, $service_id, %args) = @_;
-    croak 'usage: $agent->deregister_service($check_id, [%args])' if grep { !defined } ($service_id);
+    croak 'usage: $agent->service_deregister($check_id, [%args])' if grep { !defined } ($service_id);
     $$self->api_exec($$self->_agent_endpoint."/service/deregister/".$service_id, 'GET', %args);
     return;
 }
 
-sub maintenance_service {
+sub service_maintenance {
     my ($self, $service_id, $enable, %args) = @_;
-    croak 'usage: $agent->maintenance_service($service_id, $enable, [%args])' if grep { !defined } ($service_id, $enable);
+    croak 'usage: $agent->service_maintenance($service_id, $enable, [%args])' if grep { !defined } ($service_id, $enable);
     $$self->api_exec($$self->_agent_endpoint."/service/maintenance/".$service_id, 'PUT', enable => ($enable ? "true" : "false"), %args);
     return;
 }
