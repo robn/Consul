@@ -24,7 +24,7 @@ package Consul::Check::Script;
 
 use Moo;
 use Types::Standard qw(Str);
-use JSON qw(encode_json);
+use JSON::MaybeXS qw(encode_json);
 
 has script   => ( is => 'ro', isa => Str, required => 1 );
 has interval => ( is => 'ro', isa => Str, required => 1 );
@@ -46,7 +46,7 @@ package Consul::Check::TTL;
 
 use Moo;
 use Types::Standard qw(Str);
-use JSON qw(encode_json);
+use JSON::MaybeXS qw(encode_json);
 
 has ttl => ( is => 'ro', isa => Str, required => 1 );
 

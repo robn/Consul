@@ -21,7 +21,7 @@ package Consul::API::ACL::Impl;
 
 use Moo;
 
-use JSON qw(decode_json);
+use JSON::MaybeXS qw(decode_json);
 use Carp qw(croak);
 
 sub create {
