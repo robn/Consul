@@ -21,7 +21,7 @@ package Consul::API::KV::Impl;
 
 use Moo;
 
-use JSON::MaybeXS qw(decode_json);
+use JSON::MaybeXS;
 use Carp qw(croak);
 
 sub get {

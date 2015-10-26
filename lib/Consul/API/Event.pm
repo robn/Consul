@@ -21,7 +21,7 @@ package Consul::API::Event::Impl;
 
 use Moo;
 
-use JSON::MaybeXS qw(decode_json);
+use JSON::MaybeXS;
 use Carp qw(croak);
 
 sub fire {

@@ -5,7 +5,7 @@ use namespace::autoclean;
 use Moo;
 use Types::Standard qw(Str Int ArrayRef);
 use Carp qw(croak);
-use JSON::MaybeXS qw(encode_json);
+use JSON::MaybeXS;
 
 has name     => ( is => 'ro', isa => Str,           required => 1 );
 has id       => ( is => 'ro', isa => Str );
