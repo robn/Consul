@@ -18,7 +18,7 @@ has port => ( is => 'ro', isa => Int, default => 8500 );
 has ssl => ( is => 'ro', isa => Bool, default => 0 );
 
 has http => ( is => 'lazy', isa => class_type('HTTP::Tiny') );
-sub _build_http { HTTP::Tiny->new };
+sub _build_http { HTTP::Tiny->new(timeout => 5) };
 
 has version_prefix => ( is => 'ro', isa => Str, default => '/v1' );
 
