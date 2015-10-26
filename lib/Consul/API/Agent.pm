@@ -40,8 +40,8 @@ sub members {
 }
 
 sub self {
-    # self
-    croak "not yet implemented";
+    my ($self, %args) = @_;
+    Consul::API::Agent::Self->new(%{decode_json($$self->api_exec($$self->_agent_endpoint."/self", 'GET', %args)->{content})});
 }
 
 sub maintenance {
@@ -161,5 +161,15 @@ has protocol_cur => ( is => 'ro', isa => Int,          init_arg => 'ProtocolCur'
 has delegate_min => ( is => 'ro', isa => Int,          init_arg => 'DelegateMin', required => 1 );
 has delegate_max => ( is => 'ro', isa => Int,          init_arg => 'DelegateMax', required => 1 );
 has delegate_cur => ( is => 'ro', isa => Int,          init_arg => 'DelegateCur', required => 1 );
+
+package Consul::API::Agent::Self;
+
+use Moo;
+use Types::Standard qw(HashRef);
+use Type::Utils qw(class_type);
+
+# XXX raw hash. not happy about this, but the list of config keys don't seem to be consistent across environments
+has config => ( is => 'ro', isa => HashRef,                                  init_arg => 'Config', required => 1, coerce => sub { $_[0] // {} } );
+has member => ( is => 'ro', isa => class_type('Consul::API::Agent::Member'), init_arg => 'Member', required => 1, coerce => sub { Consul::API::Agent::Member->new($_[0]) } );
 
 1;
