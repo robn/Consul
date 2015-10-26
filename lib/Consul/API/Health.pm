@@ -17,7 +17,8 @@ sub health {
     return bless \$self, "Consul::API::Health::Impl";
 }
 
-package Consul::API::Health::Impl;
+package
+    Consul::API::Health::Impl; # hide from PAUSE
 
 use Moo;
 

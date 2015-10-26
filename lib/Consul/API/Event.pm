@@ -17,7 +17,8 @@ sub event {
     return bless \$self, "Consul::API::Event::Impl";
 }
 
-package Consul::API::Event::Impl;
+package
+    Consul::API::Event::Impl; # hide from PAUSE
 
 use Moo;
 

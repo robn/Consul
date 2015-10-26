@@ -17,7 +17,8 @@ sub session {
     return bless \$self, "Consul::API::Session::Impl";
 }
 
-package Consul::API::Session::Impl;
+package
+    Consul::API::Session::Impl; # hide from PAUSE
 
 use Moo;
 

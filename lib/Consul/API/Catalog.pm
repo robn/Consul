@@ -17,7 +17,8 @@ sub catalog {
     return bless \$self, "Consul::API::Catalog::Impl";
 }
 
-package Consul::API::Catalog::Impl;
+package
+    Consul::API::Catalog::Impl; # hide from PAUSE
 
 use Moo;
 

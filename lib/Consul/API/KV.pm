@@ -17,7 +17,8 @@ sub kv {
     return bless \$self, "Consul::API::KV::Impl";
 }
 
-package Consul::API::KV::Impl;
+package
+    Consul::API::KV::Impl; # hide from PAUSE
 
 use Moo;
 

@@ -17,7 +17,8 @@ sub acl {
     return bless \$self, "Consul::API::ACL::Impl";
 }
 
-package Consul::API::ACL::Impl;
+package
+    Consul::API::ACL::Impl; # hide from PAUSE
 
 use Moo;
 

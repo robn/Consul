@@ -17,7 +17,8 @@ sub status {
     return bless \$self, "Consul::API::Status::Impl";
 }
 
-package Consul::API::Status::Impl;
+package
+    Consul::API::Status::Impl; # hide from PAUSE
 
 use Moo;
 

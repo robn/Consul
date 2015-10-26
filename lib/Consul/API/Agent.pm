@@ -17,7 +17,8 @@ sub agent {
     return bless \$self, "Consul::API::Agent::Impl";
 }
 
-package Consul::API::Agent::Impl;
+package
+    Consul::API::Agent::Impl; # hide from PAUSE
 
 use Moo;
 
