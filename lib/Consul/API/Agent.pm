@@ -143,6 +143,7 @@ use Types::Standard qw(Str Int ArrayRef);
 
 has id      => ( is => 'ro', isa => Str,           init_arg => 'ID',      required => 1 );
 has service => ( is => 'ro', isa => Str,           init_arg => 'Service', required => 1 );
+has address => ( is => 'ro', isa => Str,           init_arg => 'Address', required => 1 );
 has port    => ( is => 'ro', isa => Int,           init_arg => 'Port',    required => 1 );
 has tags    => ( is => 'ro', isa => ArrayRef[Str], init_arg => 'Tags',    required => 1, coerce => sub { $_[0] // [] } );
 
