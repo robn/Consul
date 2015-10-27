@@ -57,8 +57,9 @@ sub deregister {
 }
 
 sub node {
-    # node
-    croak "not yet implemented";
+    my ($self, $node, %args) = @_;
+    croak 'usage: $catalog->node($node, [%args])' if grep { !defined } ($node);
+    Consul::API::Catalog::Node->new(decode_json($$self->api_exec($$self->_catalog_endpoint."/node/".$node, 'GET', %args)->{content}));
 }
 
 package Consul::API::Catalog::ShortNode;
@@ -80,5 +81,14 @@ has port    => ( is => 'ro', isa => Int,           init_arg => 'ServicePort', re
 has node    => ( is => 'ro', isa => Str,           init_arg => 'Node',        required => 1 );
 has address => ( is => 'ro', isa => Str,           init_arg => 'Address',     required => 1 );
 has tags    => ( is => 'ro', isa => ArrayRef[Str], init_arg => 'ServiceTags', required => 1, coerce => sub { $_[0] // [] } );
+
+package Consul::API::Catalog::Node;
+
+use Moo;
+use Types::Standard qw(HashRef);
+use Type::Utils qw(class_type);
+
+has node     => ( is => 'ro', isa => class_type('Consul::API::Catalog::ShortNode'),      init_arg => 'Node',     required => 1, coerce => sub { Consul::API::Catalog::ShortNode->new($_[0]) } );
+has services => ( is => 'ro', isa => HashRef[class_type('Consul::API::Agent::Service')], init_arg => 'Services', required => 1, coerce => sub { +{ map { $_ => Consul::API::Agent::Service->new($_[0]->{$_}) } keys %{$_[0]} } } );
 
 1;
