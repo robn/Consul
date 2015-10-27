@@ -27,12 +27,12 @@ use Carp qw(croak);
 
 sub datacenters {
     my ($self, %args) = @_;
-    @{decode_json($$self->api_exec($$self->_catalog_endpoint."/datacenters", 'GET', %args)->{content})};
+    decode_json($$self->api_exec($$self->_catalog_endpoint."/datacenters", 'GET', %args)->{content});
 }
 
 sub nodes {
     my ($self, %args) = @_;
-    map { Consul::API::Catalog::ShortNode->new(%$_) } @{decode_json($$self->api_exec($$self->_catalog_endpoint."/nodes", 'GET', %args)->{content})};
+    [ map { Consul::API::Catalog::ShortNode->new(%$_) } @{decode_json($$self->api_exec($$self->_catalog_endpoint."/nodes", 'GET', %args)->{content})} ];
 }
 
 sub services {
@@ -43,7 +43,7 @@ sub services {
 sub service {
     my ($self, $service, %args) = @_;
     croak 'usage: $catalog->service($service, [%args])' if grep { !defined } ($service);
-    map { Consul::API::Catalog::Service->new(%$_) } @{decode_json($$self->api_exec($$self->_catalog_endpoint."/service/".$service, 'GET', %args)->{content})};
+    [ map { Consul::API::Catalog::Service->new(%$_) } @{decode_json($$self->api_exec($$self->_catalog_endpoint."/service/".$service, 'GET', %args)->{content})} ];
 }
 
 sub register {

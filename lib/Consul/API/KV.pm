@@ -48,7 +48,7 @@ sub delete {
 sub keys {
     my ($self, $key, %args) = @_;
     croak 'usage: $kv->keys($key, [%args])' if grep { !defined } ($key);
-    @{decode_json($$self->api_exec($$self->_kv_endpoint."/".$key, 'GET', %args, keys => 1)->{content})};
+    decode_json($$self->api_exec($$self->_kv_endpoint."/".$key, 'GET', %args, keys => 1)->{content});
 }
 
 package Consul::API::KV::Response;

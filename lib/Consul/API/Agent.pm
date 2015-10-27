@@ -27,17 +27,17 @@ use Carp qw(croak);
 
 sub checks {
     my ($self, %args) = @_;
-    map { Consul::API::Agent::Check->new(%$_) } values %{decode_json($$self->api_exec($$self->_agent_endpoint."/checks", 'GET', %args)->{content})};
+    [ map { Consul::API::Agent::Check->new(%$_) } values %{decode_json($$self->api_exec($$self->_agent_endpoint."/checks", 'GET', %args)->{content})} ];
 }
 
 sub services {
     my ($self, %args) = @_;
-    map { Consul::API::Agent::Service->new(%$_) } values %{decode_json($$self->api_exec($$self->_agent_endpoint."/services", 'GET', %args)->{content})};
+    [ map { Consul::API::Agent::Service->new(%$_) } values %{decode_json($$self->api_exec($$self->_agent_endpoint."/services", 'GET', %args)->{content})} ];
 }
 
 sub members {
     my ($self, %args) = @_;
-    map { Consul::API::Agent::Member->new(%$_) } @{decode_json($$self->api_exec($$self->_agent_endpoint."/members", 'GET', %args)->{content})};
+    [ map { Consul::API::Agent::Member->new(%$_) } @{decode_json($$self->api_exec($$self->_agent_endpoint."/members", 'GET', %args)->{content})} ];
 }
 
 sub self {

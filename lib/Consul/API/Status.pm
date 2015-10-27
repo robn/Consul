@@ -33,7 +33,7 @@ sub leader {
 
 sub peers {
     my ($self, %args) = @_;
-    @{decode_json($$self->api_exec($$self->_status_endpoint."/peers", "GET", %args)->{content})};
+    decode_json($$self->api_exec($$self->_status_endpoint."/peers", "GET", %args)->{content});
 }
 
 1;
