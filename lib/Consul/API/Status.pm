@@ -13,7 +13,8 @@ sub _build__status_endpoint {
 }
 
 sub status {
-    my ($self) = @_;
+    my $self = shift;
+    $self = Consul->new(@_) unless ref $self;
     return bless \$self, "Consul::API::Status::Impl";
 }
 

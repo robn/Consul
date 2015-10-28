@@ -13,7 +13,8 @@ sub _build__session_endpoint {
 }
 
 sub session {
-    my ($self) = @_;
+    my $self = shift;
+    $self = Consul->new(@_) unless ref $self;
     return bless \$self, "Consul::API::Session::Impl";
 }
 

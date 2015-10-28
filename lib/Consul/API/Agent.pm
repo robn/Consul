@@ -13,7 +13,8 @@ sub _build__agent_endpoint {
 }
 
 sub agent {
-    my ($self) = @_;
+    my $self = shift;
+    $self = Consul->new(@_) unless ref $self;
     return bless \$self, "Consul::API::Agent::Impl";
 }
 

@@ -13,7 +13,8 @@ sub _build__acl_endpoint {
 }
 
 sub acl {
-    my ($self) = @_;
+    my $self = shift;
+    $self = Consul->new(@_) unless ref $self;
     return bless \$self, "Consul::API::ACL::Impl";
 }
 

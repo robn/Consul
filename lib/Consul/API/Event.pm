@@ -13,7 +13,8 @@ sub _build__event_endpoint {
 }
 
 sub event {
-    my ($self) = @_;
+    my $self = shift;
+    $self = Consul->new(@_) unless ref $self;
     return bless \$self, "Consul::API::Event::Impl";
 }
 

@@ -13,7 +13,8 @@ sub _build__catalog_endpoint {
 }
 
 sub catalog {
-    my ($self) = @_;
+    my $self = shift;
+    $self = Consul->new(@_) unless ref $self;
     return bless \$self, "Consul::API::Catalog::Impl";
 }
 

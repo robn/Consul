@@ -13,7 +13,8 @@ sub _build__health_endpoint {
 }
 
 sub health {
-    my ($self) = @_;
+    my $self = shift;
+    $self = Consul->new(@_) unless ref $self;
     return bless \$self, "Consul::API::Health::Impl";
 }
 
