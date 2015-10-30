@@ -2,10 +2,13 @@ package Consul;
 
 # ABSTRACT: Client library for consul
 
+use feature qw(state);
+
 use namespace::autoclean;
 
 use HTTP::Tiny 0.014;
 use URI::Escape qw(uri_escape);
+use JSON::MaybeXS qw(JSON);
 use Carp qw(croak);
 
 use Moo;
@@ -39,11 +42,17 @@ sub _prep_url {
 
 sub _api_exec {
     my ($self, $path, $method, %args) = @_;
+
     my $content = delete $args{_content};
     delete $args{$_} for grep { m/^_/ } keys %args;
+
     my $res = $self->http->request($method, $self->_prep_url($path, %args), defined $content ? { content => $content } : {});
-    return $res if $res->{success};
-    croak "$res->{status} $res->{reason}: $res->{content}";
+    croak "$res->{status} $res->{reason}: $res->{content}" unless $res->{success};
+
+    return if !defined $res->{content} || length $res->{content} == 0;
+
+    state $json = JSON->new->utf8->allow_nonref;
+    return $json->decode($res->{content});
 }
 
 with qw(

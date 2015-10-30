@@ -23,13 +23,12 @@ package
 
 use Moo;
 
-use JSON::MaybeXS;
 use Carp qw(croak);
 
 sub get {
     my ($self, $key, %args) = @_;
     croak 'usage: $kv->get($key, [%args])' if grep { !defined } ($key);
-    Consul::API::KV::Response->new(decode_json($$self->_api_exec($$self->_kv_endpoint."/".$key, 'GET', %args)->{content})->[0]);
+    Consul::API::KV::Response->new($$self->_api_exec($$self->_kv_endpoint."/".$key, 'GET', %args)->[0]);
 }
 
 sub put {
@@ -49,7 +48,7 @@ sub delete {
 sub keys {
     my ($self, $key, %args) = @_;
     croak 'usage: $kv->keys($key, [%args])' if grep { !defined } ($key);
-    decode_json($$self->_api_exec($$self->_kv_endpoint."/".$key, 'GET', %args, keys => 1)->{content});
+    $$self->_api_exec($$self->_kv_endpoint."/".$key, 'GET', %args, keys => 1);
 }
 
 package Consul::API::KV::Response;

@@ -23,18 +23,16 @@ package
 
 use Moo;
 
-use JSON::MaybeXS;
 use Carp qw(croak);
 
 sub leader {
     my ($self, %args) = @_;
-    # returns raw JSON string, so need alternate decoder
-    JSON->new->utf8->allow_nonref->decode($$self->_api_exec($$self->_status_endpoint."/leader", "GET", %args)->{content});
+    $$self->_api_exec($$self->_status_endpoint."/leader", "GET", %args);
 }
 
 sub peers {
     my ($self, %args) = @_;
-    decode_json($$self->_api_exec($$self->_status_endpoint."/peers", "GET", %args)->{content});
+    $$self->_api_exec($$self->_status_endpoint."/peers", "GET", %args);
 }
 
 1;

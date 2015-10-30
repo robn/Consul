@@ -23,28 +23,28 @@ package
 
 use Moo;
 
-use JSON::MaybeXS;
 use Carp qw(croak);
 
 sub datacenters {
     my ($self, %args) = @_;
-    decode_json($$self->_api_exec($$self->_catalog_endpoint."/datacenters", 'GET', %args)->{content});
+    $$self->_api_exec($$self->_catalog_endpoint."/datacenters", 'GET', %args);
 }
 
 sub nodes {
     my ($self, %args) = @_;
-    [ map { Consul::API::Catalog::ShortNode->new(%$_) } @{decode_json($$self->_api_exec($$self->_catalog_endpoint."/nodes", 'GET', %args)->{content})} ];
+    [ map { Consul::API::Catalog::ShortNode->new(%$_) } @{$$self->_api_exec($$self->_catalog_endpoint."/nodes", 'GET', %args)} ];
 }
 
+# XXX return hashref
 sub services {
     my ($self, %args) = @_;
-    %{decode_json($$self->_api_exec($$self->_catalog_endpoint."/services", 'GET', %args)->{content})};
+    %{$$self->_api_exec($$self->_catalog_endpoint."/services", 'GET', %args)};
 }
 
 sub service {
     my ($self, $service, %args) = @_;
     croak 'usage: $catalog->service($service, [%args])' if grep { !defined } ($service);
-    [ map { Consul::API::Catalog::Service->new(%$_) } @{decode_json($$self->_api_exec($$self->_catalog_endpoint."/service/".$service, 'GET', %args)->{content})} ];
+    [ map { Consul::API::Catalog::Service->new(%$_) } @{$$self->_api_exec($$self->_catalog_endpoint."/service/".$service, 'GET', %args)} ];
 }
 
 sub register {
@@ -60,7 +60,7 @@ sub deregister {
 sub node {
     my ($self, $node, %args) = @_;
     croak 'usage: $catalog->node($node, [%args])' if grep { !defined } ($node);
-    Consul::API::Catalog::Node->new(decode_json($$self->_api_exec($$self->_catalog_endpoint."/node/".$node, 'GET', %args)->{content}));
+    Consul::API::Catalog::Node->new($$self->_api_exec($$self->_catalog_endpoint."/node/".$node, 'GET', %args));
 }
 
 package Consul::API::Catalog::ShortNode;

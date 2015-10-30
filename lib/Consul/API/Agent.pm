@@ -23,27 +23,26 @@ package
 
 use Moo;
 
-use JSON::MaybeXS;
 use Carp qw(croak);
 
 sub checks {
     my ($self, %args) = @_;
-    [ map { Consul::API::Agent::Check->new(%$_) } values %{decode_json($$self->_api_exec($$self->_agent_endpoint."/checks", 'GET', %args)->{content})} ];
+    [ map { Consul::API::Agent::Check->new(%$_) } values %{$$self->_api_exec($$self->_agent_endpoint."/checks", 'GET', %args)} ];
 }
 
 sub services {
     my ($self, %args) = @_;
-    [ map { Consul::API::Agent::Service->new(%$_) } values %{decode_json($$self->_api_exec($$self->_agent_endpoint."/services", 'GET', %args)->{content})} ];
+    [ map { Consul::API::Agent::Service->new(%$_) } values %{$$self->_api_exec($$self->_agent_endpoint."/services", 'GET', %args)} ];
 }
 
 sub members {
     my ($self, %args) = @_;
-    [ map { Consul::API::Agent::Member->new(%$_) } @{decode_json($$self->_api_exec($$self->_agent_endpoint."/members", 'GET', %args)->{content})} ];
+    [ map { Consul::API::Agent::Member->new(%$_) } @{$$self->_api_exec($$self->_agent_endpoint."/members", 'GET', %args)} ];
 }
 
 sub self {
     my ($self, %args) = @_;
-    Consul::API::Agent::Self->new(%{decode_json($$self->_api_exec($$self->_agent_endpoint."/self", 'GET', %args)->{content})});
+    Consul::API::Agent::Self->new(%{$$self->_api_exec($$self->_agent_endpoint."/self", 'GET', %args)});
 }
 
 sub maintenance {

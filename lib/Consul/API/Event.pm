@@ -23,19 +23,18 @@ package
 
 use Moo;
 
-use JSON::MaybeXS;
 use Carp qw(croak);
 
 sub fire {
     my ($self, $name, %args) = @_;
     croak 'usage: $event->fire($name, [%args])' if grep { !defined } ($name);
     my $payload = delete $args{payload};
-    Consul::API::Event::Event->new(decode_json($$self->_api_exec($$self->_event_endpoint."/fire/".$name, 'PUT', %args, ($payload ? (_content => $payload) : ()))->{content}));
+    Consul::API::Event::Event->new($$self->_api_exec($$self->_event_endpoint."/fire/".$name, 'PUT', %args, ($payload ? (_content => $payload) : ())));
 }
 
 sub list {
     my ($self, %args) = @_;
-    [ map { Consul::API::Event::Event->new(%$_) } @{decode_json($$self->_api_exec($$self->_event_endpoint."/list", 'GET', %args)->{content})} ];
+    [ map { Consul::API::Event::Event->new(%$_) } @{$$self->_api_exec($$self->_event_endpoint."/list", 'GET', %args)} ];
 }
 
 package Consul::API::Event::Event;

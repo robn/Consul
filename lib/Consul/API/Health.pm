@@ -23,31 +23,30 @@ package
 
 use Moo;
 
-use JSON::MaybeXS;
 use Carp qw(croak);
 
 sub node {
     my ($self, $node, %args) = @_;
     croak 'usage: $health->node($node, [%args])' if grep { !defined } ($node);
-    [ map { Consul::API::Health::Check->new(%$_) } @{decode_json($$self->_api_exec($$self->_health_endpoint."/node/".$node, 'GET', %args)->{content})} ];
+    [ map { Consul::API::Health::Check->new(%$_) } @{$$self->_api_exec($$self->_health_endpoint."/node/".$node, 'GET', %args)} ];
 }
 
 sub checks {
     my ($self, $service, %args) = @_;
     croak 'usage: $health->checks($service, [%args])' if grep { !defined } ($service);
-    [ map { Consul::API::Health::Check->new(%$_) } @{decode_json($$self->_api_exec($$self->_health_endpoint."/checks/".$service, 'GET', %args)->{content})} ];
+    [ map { Consul::API::Health::Check->new(%$_) } @{$$self->_api_exec($$self->_health_endpoint."/checks/".$service, 'GET', %args)} ];
 }
 
 sub service {
     my ($self, $service, %args) = @_;
     croak 'usage: $health->service($service, [%args])' if grep { !defined } ($service);
-    [ map { Consul::API::Health::Service->new(%$_) } @{decode_json($$self->_api_exec($$self->_health_endpoint."/service/".$service, 'GET', %args)->{content})} ];
+    [ map { Consul::API::Health::Service->new(%$_) } @{$$self->_api_exec($$self->_health_endpoint."/service/".$service, 'GET', %args)} ];
 }
 
 sub state {
     my ($self, $state, %args) = @_;
     croak 'usage: $health->state($state, [%args])' if grep { !defined } ($state);
-    [ map { Consul::API::Health::Check->new(%$_) } @{decode_json($$self->_api_exec($$self->_health_endpoint."/state/".$state, 'GET', %args)->{content})} ];
+    [ map { Consul::API::Health::Check->new(%$_) } @{$$self->_api_exec($$self->_health_endpoint."/state/".$state, 'GET', %args)} ];
 }
 
 package Consul::API::Health::Check;
