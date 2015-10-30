@@ -38,3 +38,47 @@ sub peers {
 }
 
 1;
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Consul::API::Status - Consul system status API
+
+=head1 SYNOPSIS
+
+    use Consul;
+    my $status = Consul->status;
+    my $peers = $status->peers;
+    say "@$peers";
+
+=head1 DESCRIPTION
+
+The system status API is used to get information about the status of the Consul
+cluster.
+
+This API is fully documented at L<https://www.consul.io/docs/agent/http/status.html>.
+
+=head1 METHODS
+
+=head2 leader
+
+    $status->leader;
+
+Returns the address of the Raft leader for the datacenter in which the agent is
+running. Returns an IP:port string.
+
+=head2 peers
+
+    $status->peers;
+
+Retrieves the Raft peers for the datacenter in which the agent is running.
+Returns an arrayref of IP:port strings.
+
+=head1 SEE ALSO
+
+    L<Consul>
+
+=cut
