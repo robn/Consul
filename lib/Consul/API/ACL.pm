@@ -5,11 +5,11 @@ use namespace::autoclean;
 use Moo::Role;
 use Types::Standard qw(Str);
 
-requires qw(version_prefix api_exec);
+requires qw(_version_prefix _api_exec);
 
 has _acl_endpoint => ( is => 'lazy', isa => Str );
 sub _build__acl_endpoint {
-    shift->version_prefix . '/acl';
+    shift->_version_prefix . '/acl';
 }
 
 sub acl {

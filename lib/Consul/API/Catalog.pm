@@ -5,11 +5,11 @@ use namespace::autoclean;
 use Moo::Role;
 use Types::Standard qw(Str);
 
-requires qw(version_prefix api_exec);
+requires qw(_version_prefix _api_exec);
 
 has _catalog_endpoint => ( is => 'lazy', isa => Str );
 sub _build__catalog_endpoint {
-    shift->version_prefix . '/catalog';
+    shift->_version_prefix . '/catalog';
 }
 
 sub catalog {
@@ -28,23 +28,23 @@ use Carp qw(croak);
 
 sub datacenters {
     my ($self, %args) = @_;
-    decode_json($$self->api_exec($$self->_catalog_endpoint."/datacenters", 'GET', %args)->{content});
+    decode_json($$self->_api_exec($$self->_catalog_endpoint."/datacenters", 'GET', %args)->{content});
 }
 
 sub nodes {
     my ($self, %args) = @_;
-    [ map { Consul::API::Catalog::ShortNode->new(%$_) } @{decode_json($$self->api_exec($$self->_catalog_endpoint."/nodes", 'GET', %args)->{content})} ];
+    [ map { Consul::API::Catalog::ShortNode->new(%$_) } @{decode_json($$self->_api_exec($$self->_catalog_endpoint."/nodes", 'GET', %args)->{content})} ];
 }
 
 sub services {
     my ($self, %args) = @_;
-    %{decode_json($$self->api_exec($$self->_catalog_endpoint."/services", 'GET', %args)->{content})};
+    %{decode_json($$self->_api_exec($$self->_catalog_endpoint."/services", 'GET', %args)->{content})};
 }
 
 sub service {
     my ($self, $service, %args) = @_;
     croak 'usage: $catalog->service($service, [%args])' if grep { !defined } ($service);
-    [ map { Consul::API::Catalog::Service->new(%$_) } @{decode_json($$self->api_exec($$self->_catalog_endpoint."/service/".$service, 'GET', %args)->{content})} ];
+    [ map { Consul::API::Catalog::Service->new(%$_) } @{decode_json($$self->_api_exec($$self->_catalog_endpoint."/service/".$service, 'GET', %args)->{content})} ];
 }
 
 sub register {
@@ -60,7 +60,7 @@ sub deregister {
 sub node {
     my ($self, $node, %args) = @_;
     croak 'usage: $catalog->node($node, [%args])' if grep { !defined } ($node);
-    Consul::API::Catalog::Node->new(decode_json($$self->api_exec($$self->_catalog_endpoint."/node/".$node, 'GET', %args)->{content}));
+    Consul::API::Catalog::Node->new(decode_json($$self->_api_exec($$self->_catalog_endpoint."/node/".$node, 'GET', %args)->{content}));
 }
 
 package Consul::API::Catalog::ShortNode;

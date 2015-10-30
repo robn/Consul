@@ -5,11 +5,11 @@ use namespace::autoclean;
 use Moo::Role;
 use Types::Standard qw(Str);
 
-requires qw(version_prefix api_exec);
+requires qw(_version_prefix _api_exec);
 
 has _kv_endpoint => ( is => 'lazy', isa => Str );
 sub _build__kv_endpoint {
-    shift->version_prefix . '/kv';
+    shift->_version_prefix . '/kv';
 }
 
 sub kv {
@@ -29,27 +29,27 @@ use Carp qw(croak);
 sub get {
     my ($self, $key, %args) = @_;
     croak 'usage: $kv->get($key, [%args])' if grep { !defined } ($key);
-    Consul::API::KV::Response->new(decode_json($$self->api_exec($$self->_kv_endpoint."/".$key, 'GET', %args)->{content})->[0]);
+    Consul::API::KV::Response->new(decode_json($$self->_api_exec($$self->_kv_endpoint."/".$key, 'GET', %args)->{content})->[0]);
 }
 
 sub put {
     my ($self, $key, $value, %args) = @_;
     croak 'usage: $kv->put($key, $value, [%args])' if grep { !defined } ($key, $value);
-    my $res = $$self->api_exec($$self->_kv_endpoint."/".$key, 'PUT', %args, _content => $value);
+    my $res = $$self->_api_exec($$self->_kv_endpoint."/".$key, 'PUT', %args, _content => $value);
     return $res->{content} =~ m/true/;
 }
 
 sub delete {
     my ($self, $key, %args) = @_;
     croak 'usage: $kv->delete($key, [%args])' if grep { !defined } ($key);
-    $$self->api_exec($$self->_kv_endpoint."/".$key, 'DELETE', %args);
+    $$self->_api_exec($$self->_kv_endpoint."/".$key, 'DELETE', %args);
     return;
 }
 
 sub keys {
     my ($self, $key, %args) = @_;
     croak 'usage: $kv->keys($key, [%args])' if grep { !defined } ($key);
-    decode_json($$self->api_exec($$self->_kv_endpoint."/".$key, 'GET', %args, keys => 1)->{content});
+    decode_json($$self->_api_exec($$self->_kv_endpoint."/".$key, 'GET', %args, keys => 1)->{content});
 }
 
 package Consul::API::KV::Response;

@@ -5,11 +5,11 @@ use namespace::autoclean;
 use Moo::Role;
 use Types::Standard qw(Str);
 
-requires qw(version_prefix api_exec);
+requires qw(_version_prefix _api_exec);
 
 has _agent_endpoint => ( is => 'lazy', isa => Str );
 sub _build__agent_endpoint {
-    shift->version_prefix . '/agent';
+    shift->_version_prefix . '/agent';
 }
 
 sub agent {
@@ -28,98 +28,98 @@ use Carp qw(croak);
 
 sub checks {
     my ($self, %args) = @_;
-    [ map { Consul::API::Agent::Check->new(%$_) } values %{decode_json($$self->api_exec($$self->_agent_endpoint."/checks", 'GET', %args)->{content})} ];
+    [ map { Consul::API::Agent::Check->new(%$_) } values %{decode_json($$self->_api_exec($$self->_agent_endpoint."/checks", 'GET', %args)->{content})} ];
 }
 
 sub services {
     my ($self, %args) = @_;
-    [ map { Consul::API::Agent::Service->new(%$_) } values %{decode_json($$self->api_exec($$self->_agent_endpoint."/services", 'GET', %args)->{content})} ];
+    [ map { Consul::API::Agent::Service->new(%$_) } values %{decode_json($$self->_api_exec($$self->_agent_endpoint."/services", 'GET', %args)->{content})} ];
 }
 
 sub members {
     my ($self, %args) = @_;
-    [ map { Consul::API::Agent::Member->new(%$_) } @{decode_json($$self->api_exec($$self->_agent_endpoint."/members", 'GET', %args)->{content})} ];
+    [ map { Consul::API::Agent::Member->new(%$_) } @{decode_json($$self->_api_exec($$self->_agent_endpoint."/members", 'GET', %args)->{content})} ];
 }
 
 sub self {
     my ($self, %args) = @_;
-    Consul::API::Agent::Self->new(%{decode_json($$self->api_exec($$self->_agent_endpoint."/self", 'GET', %args)->{content})});
+    Consul::API::Agent::Self->new(%{decode_json($$self->_api_exec($$self->_agent_endpoint."/self", 'GET', %args)->{content})});
 }
 
 sub maintenance {
     my ($self, $enable, %args) = @_;
     croak 'usage: $agent->maintenance($enable, [%args])' if grep { !defined } ($enable);
-    $$self->api_exec($$self->_agent_endpoint."/maintenance", 'PUT', enable => ($enable ? "true" : "false"), %args);
+    $$self->_api_exec($$self->_agent_endpoint."/maintenance", 'PUT', enable => ($enable ? "true" : "false"), %args);
     return;
 }
 
 sub join {
     my ($self, $address, %args) = @_;
     croak 'usage: $agent->join($address, [%args])' if grep { !defined } ($address);
-    $$self->api_exec($$self->_agent_endpoint."/join/".$address, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/join/".$address, 'GET', %args);
     return;
 }
 
 sub force_leave {
     my ($self, $node, %args) = @_;
     croak 'usage: $agent->force_leave($node, [%args])' if grep { !defined } ($node);
-    $$self->api_exec($$self->_agent_endpoint."/force-leave/".$node, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/force-leave/".$node, 'GET', %args);
     return;
 }
 
 sub register_check {
     my ($self, $check, %args) = @_;
     croak 'usage: $agent->register_check($check, [%args])' if grep { !defined } ($check);
-    $$self->api_exec($$self->_agent_endpoint."/check/register", 'PUT', %args, _content => $check->to_json);
+    $$self->_api_exec($$self->_agent_endpoint."/check/register", 'PUT', %args, _content => $check->to_json);
     return;
 }
 
 sub deregister_check {
     my ($self, $check_id, %args) = @_;
     croak 'usage: $agent->deregister_check($check_id, [%args])' if grep { !defined } ($check_id);
-    $$self->api_exec($$self->_agent_endpoint."/check/deregister/".$check_id, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/check/deregister/".$check_id, 'GET', %args);
     return;
 }
 
 sub pass_check {
     my ($self, $check_id, %args) = @_;
     croak 'usage: $agent->pass_check($check_id, [%args])' if grep { !defined } ($check_id);
-    $$self->api_exec($$self->_agent_endpoint."/check/pass/".$check_id, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/check/pass/".$check_id, 'GET', %args);
     return;
 }
 
 sub warn_check {
     my ($self, $check_id, %args) = @_;
     croak 'usage: $agent->warn_check($check_id, [%args])' if grep { !defined } ($check_id);
-    $$self->api_exec($$self->_agent_endpoint."/check/warn/".$check_id, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/check/warn/".$check_id, 'GET', %args);
     return;
 }
 
 sub fail_check {
     my ($self, $check_id, %args) = @_;
     croak 'usage: $agent->fail_check($check_id, [%args])' if grep { !defined } ($check_id);
-    $$self->api_exec($$self->_agent_endpoint."/check/fail/".$check_id, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/check/fail/".$check_id, 'GET', %args);
     return;
 }
 
 sub service_register {
     my ($self, $service, %args) = @_;
     croak 'usage: $agent->service_register($service, [%args])' if grep { !defined } ($service);
-    $$self->api_exec($$self->_agent_endpoint."/service/register", 'PUT', %args, _content => $service->to_json);
+    $$self->_api_exec($$self->_agent_endpoint."/service/register", 'PUT', %args, _content => $service->to_json);
     return;
 }
 
 sub deregister_service {
     my ($self, $service_id, %args) = @_;
     croak 'usage: $agent->service_deregister($check_id, [%args])' if grep { !defined } ($service_id);
-    $$self->api_exec($$self->_agent_endpoint."/service/deregister/".$service_id, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/service/deregister/".$service_id, 'GET', %args);
     return;
 }
 
 sub service_maintenance {
     my ($self, $service_id, $enable, %args) = @_;
     croak 'usage: $agent->service_maintenance($service_id, $enable, [%args])' if grep { !defined } ($service_id, $enable);
-    $$self->api_exec($$self->_agent_endpoint."/service/maintenance/".$service_id, 'PUT', enable => ($enable ? "true" : "false"), %args);
+    $$self->_api_exec($$self->_agent_endpoint."/service/maintenance/".$service_id, 'PUT', enable => ($enable ? "true" : "false"), %args);
     return;
 }
 

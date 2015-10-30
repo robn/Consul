@@ -20,7 +20,7 @@ has ssl => ( is => 'ro', isa => Bool, default => 0 );
 has http => ( is => 'lazy', isa => class_type('HTTP::Tiny') );
 sub _build_http { HTTP::Tiny->new(timeout => 5) };
 
-has version_prefix => ( is => 'ro', isa => Str, default => '/v1' );
+has _version_prefix => ( is => 'ro', isa => Str, default => '/v1' );
 
 has _url_base => ( is => 'lazy' );
 sub _build__url_base {
@@ -37,7 +37,7 @@ sub _prep_url {
     $url;
 }
 
-sub api_exec {
+sub _api_exec {
     my ($self, $path, $method, %args) = @_;
     my $content = delete $args{_content};
     delete $args{$_} for grep { m/^_/ } keys %args;

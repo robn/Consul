@@ -5,11 +5,11 @@ use namespace::autoclean;
 use Moo::Role;
 use Types::Standard qw(Str);
 
-requires qw(version_prefix api_exec);
+requires qw(_version_prefix _api_exec);
 
 has _session_endpoint => ( is => 'lazy', isa => Str );
 sub _build__session_endpoint {
-    shift->version_prefix . '/session';
+    shift->_version_prefix . '/session';
 }
 
 sub session {

@@ -5,11 +5,11 @@ use namespace::autoclean;
 use Moo::Role;
 use Types::Standard qw(Str);
 
-requires qw(version_prefix api_exec);
+requires qw(_version_prefix _api_exec);
 
 has _event_endpoint => ( is => 'lazy', isa => Str );
 sub _build__event_endpoint {
-    shift->version_prefix . '/event';
+    shift->_version_prefix . '/event';
 }
 
 sub event {
@@ -30,12 +30,12 @@ sub fire {
     my ($self, $name, %args) = @_;
     croak 'usage: $event->fire($name, [%args])' if grep { !defined } ($name);
     my $payload = delete $args{payload};
-    Consul::API::Event::Event->new(decode_json($$self->api_exec($$self->_event_endpoint."/fire/".$name, 'PUT', %args, ($payload ? (_content => $payload) : ()))->{content}));
+    Consul::API::Event::Event->new(decode_json($$self->_api_exec($$self->_event_endpoint."/fire/".$name, 'PUT', %args, ($payload ? (_content => $payload) : ()))->{content}));
 }
 
 sub list {
     my ($self, %args) = @_;
-    [ map { Consul::API::Event::Event->new(%$_) } @{decode_json($$self->api_exec($$self->_event_endpoint."/list", 'GET', %args)->{content})} ];
+    [ map { Consul::API::Event::Event->new(%$_) } @{decode_json($$self->_api_exec($$self->_event_endpoint."/list", 'GET', %args)->{content})} ];
 }
 
 package Consul::API::Event::Event;

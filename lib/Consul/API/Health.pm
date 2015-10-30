@@ -5,11 +5,11 @@ use namespace::autoclean;
 use Moo::Role;
 use Types::Standard qw(Str);
 
-requires qw(version_prefix api_exec);
+requires qw(_version_prefix _api_exec);
 
 has _health_endpoint => ( is => 'lazy', isa => Str );
 sub _build__health_endpoint {
-    shift->version_prefix . '/health';
+    shift->_version_prefix . '/health';
 }
 
 sub health {
@@ -29,25 +29,25 @@ use Carp qw(croak);
 sub node {
     my ($self, $node, %args) = @_;
     croak 'usage: $health->node($node, [%args])' if grep { !defined } ($node);
-    [ map { Consul::API::Health::Check->new(%$_) } @{decode_json($$self->api_exec($$self->_health_endpoint."/node/".$node, 'GET', %args)->{content})} ];
+    [ map { Consul::API::Health::Check->new(%$_) } @{decode_json($$self->_api_exec($$self->_health_endpoint."/node/".$node, 'GET', %args)->{content})} ];
 }
 
 sub checks {
     my ($self, $service, %args) = @_;
     croak 'usage: $health->checks($service, [%args])' if grep { !defined } ($service);
-    [ map { Consul::API::Health::Check->new(%$_) } @{decode_json($$self->api_exec($$self->_health_endpoint."/checks/".$service, 'GET', %args)->{content})} ];
+    [ map { Consul::API::Health::Check->new(%$_) } @{decode_json($$self->_api_exec($$self->_health_endpoint."/checks/".$service, 'GET', %args)->{content})} ];
 }
 
 sub service {
     my ($self, $service, %args) = @_;
     croak 'usage: $health->service($service, [%args])' if grep { !defined } ($service);
-    [ map { Consul::API::Health::Service->new(%$_) } @{decode_json($$self->api_exec($$self->_health_endpoint."/service/".$service, 'GET', %args)->{content})} ];
+    [ map { Consul::API::Health::Service->new(%$_) } @{decode_json($$self->_api_exec($$self->_health_endpoint."/service/".$service, 'GET', %args)->{content})} ];
 }
 
 sub state {
     my ($self, $state, %args) = @_;
     croak 'usage: $health->state($state, [%args])' if grep { !defined } ($state);
-    [ map { Consul::API::Health::Check->new(%$_) } @{decode_json($$self->api_exec($$self->_health_endpoint."/state/".$state, 'GET', %args)->{content})} ];
+    [ map { Consul::API::Health::Check->new(%$_) } @{decode_json($$self->_api_exec($$self->_health_endpoint."/state/".$state, 'GET', %args)->{content})} ];
 }
 
 package Consul::API::Health::Check;

@@ -5,11 +5,11 @@ use namespace::autoclean;
 use Moo::Role;
 use Types::Standard qw(Str);
 
-requires qw(version_prefix api_exec);
+requires qw(_version_prefix _api_exec);
 
 has _status_endpoint => ( is => 'lazy', isa => Str );
 sub _build__status_endpoint {
-    shift->version_prefix . '/status';
+    shift->_version_prefix . '/status';
 }
 
 sub status {
@@ -29,12 +29,12 @@ use Carp qw(croak);
 sub leader {
     my ($self, %args) = @_;
     # returns raw JSON string, so need alternate decoder
-    JSON->new->utf8->allow_nonref->decode($$self->api_exec($$self->_status_endpoint."/leader", "GET", %args)->{content});
+    JSON->new->utf8->allow_nonref->decode($$self->_api_exec($$self->_status_endpoint."/leader", "GET", %args)->{content});
 }
 
 sub peers {
     my ($self, %args) = @_;
-    decode_json($$self->api_exec($$self->_status_endpoint."/peers", "GET", %args)->{content});
+    decode_json($$self->_api_exec($$self->_status_endpoint."/peers", "GET", %args)->{content});
 }
 
 1;
