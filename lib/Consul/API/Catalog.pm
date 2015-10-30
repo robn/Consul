@@ -35,10 +35,9 @@ sub nodes {
     [ map { Consul::API::Catalog::ShortNode->new(%$_) } @{$$self->_api_exec($$self->_catalog_endpoint."/nodes", 'GET', %args)} ];
 }
 
-# XXX return hashref
 sub services {
     my ($self, %args) = @_;
-    %{$$self->_api_exec($$self->_catalog_endpoint."/services", 'GET', %args)};
+    $$self->_api_exec($$self->_catalog_endpoint."/services", 'GET', %args);
 }
 
 sub service {
