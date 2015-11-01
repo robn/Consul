@@ -34,8 +34,7 @@ sub get {
 sub put {
     my ($self, $key, $value, %args) = @_;
     croak 'usage: $kv->put($key, $value, [%args])' if grep { !defined } ($key, $value);
-    my $res = $$self->_api_exec($$self->_kv_endpoint."/".$key, 'PUT', %args, _content => $value);
-    return $res->{content} =~ m/true/;
+    $$self->_api_exec($$self->_kv_endpoint."/".$key, 'PUT', %args, _content => $value);
 }
 
 sub delete {
