@@ -134,6 +134,8 @@ C<http>
 A C<HTTP::Tiny> object to use to access the server. If not specified, one will
 be created.
 
+=back
+
 =head1 ENDPOINTS
 
 Individual API endpoints are implemented in separate modules. The following
