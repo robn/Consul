@@ -66,37 +66,37 @@ sub force_leave {
     return;
 }
 
-sub register_check {
+sub check_register {
     my ($self, $check, %args) = @_;
-    croak 'usage: $agent->register_check($check, [%args])' if grep { !defined } ($check);
+    croak 'usage: $agent->check_register($check, [%args])' if grep { !defined } ($check);
     $$self->_api_exec($$self->_agent_endpoint."/check/register", 'PUT', %args, _content => $check->to_json);
     return;
 }
 
-sub deregister_check {
+sub check_deregister {
     my ($self, $check_id, %args) = @_;
-    croak 'usage: $agent->deregister_check($check_id, [%args])' if grep { !defined } ($check_id);
+    croak 'usage: $agent->check_deregister($check_id, [%args])' if grep { !defined } ($check_id);
     $$self->_api_exec($$self->_agent_endpoint."/check/deregister/".$check_id, 'GET', %args);
     return;
 }
 
-sub pass_check {
+sub check_pass {
     my ($self, $check_id, %args) = @_;
-    croak 'usage: $agent->pass_check($check_id, [%args])' if grep { !defined } ($check_id);
+    croak 'usage: $agent->check_pass($check_id, [%args])' if grep { !defined } ($check_id);
     $$self->_api_exec($$self->_agent_endpoint."/check/pass/".$check_id, 'GET', %args);
     return;
 }
 
-sub warn_check {
+sub check_warn {
     my ($self, $check_id, %args) = @_;
-    croak 'usage: $agent->warn_check($check_id, [%args])' if grep { !defined } ($check_id);
+    croak 'usage: $agent->check_warn($check_id, [%args])' if grep { !defined } ($check_id);
     $$self->_api_exec($$self->_agent_endpoint."/check/warn/".$check_id, 'GET', %args);
     return;
 }
 
-sub fail_check {
+sub check_fail {
     my ($self, $check_id, %args) = @_;
-    croak 'usage: $agent->fail_check($check_id, [%args])' if grep { !defined } ($check_id);
+    croak 'usage: $agent->check_fail($check_id, [%args])' if grep { !defined } ($check_id);
     $$self->_api_exec($$self->_agent_endpoint."/check/fail/".$check_id, 'GET', %args);
     return;
 }
