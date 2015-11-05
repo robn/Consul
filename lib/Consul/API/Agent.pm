@@ -108,7 +108,7 @@ sub service_register {
     return;
 }
 
-sub deregister_service {
+sub service_deregister {
     my ($self, $service_id, %args) = @_;
     croak 'usage: $agent->service_deregister($check_id, [%args])' if grep { !defined } ($service_id);
     $$self->_api_exec($$self->_agent_endpoint."/service/deregister/".$service_id, 'GET', %args);
