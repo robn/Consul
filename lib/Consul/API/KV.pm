@@ -66,3 +66,38 @@ has modify_index => ( is => 'ro', isa => Int, init_arg => 'ModifyIndex', require
 has lock_index   => ( is => 'ro', isa => Int, init_arg => 'LockIndex',   required => 1 );
 
 1;
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Consul::API::KV - Consul key/value store API
+
+=head1 SYNOPSIS
+
+    use Consul;
+    my $kv = Consul->kv;
+
+=head1 DESCRIPTION
+
+The KV API is used to access Consul's simple key/value store, useful for storing service configuration or other metadata.
+
+This API is fully documented at L<https://www.consul.io/docs/agent/http/kv.html>.
+
+=head1 METHODS
+
+=head2 get
+
+=head2 put
+
+=head2 delete
+
+=head2 keys
+
+=head1 SEE ALSO
+
+    L<Consul>
+
+=cut

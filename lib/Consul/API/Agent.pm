@@ -175,3 +175,61 @@ has config => ( is => 'ro', isa => HashRef,                                  ini
 has member => ( is => 'ro', isa => class_type('Consul::API::Agent::Member'), init_arg => 'Member', required => 1, coerce => sub { Consul::API::Agent::Member->new($_[0]) } );
 
 1;
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Consul::API::Agent - Consul agent API
+
+=head1 SYNOPSIS
+
+    use Consul;
+    my $agent = Consul->agent;
+    $agent->self;
+
+=head1 DESCRIPTION
+
+The Agent API is used to interact with the local Consul agent.
+
+This API is fully documented at L<https://www.consul.io/docs/agent/http/agent.html>.
+
+=head1 METHODS
+
+=head2 checks
+
+=head2 services
+
+=head2 members
+
+=head2 self
+
+=head2 maintenance
+
+=head2 join
+
+=head2 force_leave
+
+=head2 check_register
+
+=head2 check_deregister
+
+=head2 check_pass
+
+=head2 check_warn
+
+=head2 check_fail
+
+=head2 service_register
+
+=head2 service_deregister
+
+=head2 service_maintenance
+
+=head1 SEE ALSO
+
+    L<Consul>
+
+=cut

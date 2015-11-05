@@ -51,3 +51,40 @@ sub list {
 }
 
 1;
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Consul::API::Session - Consul session API
+
+=head1 SYNOPSIS
+
+    use Consul;
+    my $session = Consul->session;
+
+=head1 DESCRIPTION
+
+The Session API is used to create, destroy, and query sessions.
+
+This API is fully documented at L<https://www.consul.io/docs/agent/http/session.html>.
+
+=head1 METHODS
+
+=head2 create
+
+=head2 destroy
+
+=head2 info
+
+=head2 node
+
+=head2 list
+
+=head1 SEE ALSO
+
+    L<Consul>
+
+=cut

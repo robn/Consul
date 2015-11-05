@@ -74,3 +74,38 @@ has service => ( is => 'ro', isa => class_type('Consul::API::Agent::Service'),  
 has checks  => ( is => 'ro', isa => ArrayRef[class_type('Consul::API::Health::Check')], init_arg => 'Checks',  required => 1, coerce => sub { [ map { Consul::API::Health::Check->new($_) } @{$_[0]} ] } );
 
 1;
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Consul::API::Health - Consul health API
+
+=head1 SYNOPSIS
+
+    use Consul;
+    my $health = Consul->health;
+
+=head1 DESCRIPTION
+
+The Health API is used to query health-related information.
+
+This API is fully documented at L<https://www.consul.io/docs/agent/http/health.html>.
+
+=head1 METHODS
+
+=head2 node
+
+=head2 checks
+
+=head2 service
+
+=head2 state
+
+=head1 SEE ALSO
+
+    L<Consul>
+
+=cut

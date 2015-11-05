@@ -54,3 +54,34 @@ has version        => ( is => 'ro', isa => Int,        init_arg => 'Version',   
 has l_time         => ( is => 'ro', isa => Int,        init_arg => 'LTime',         required => 1 );
 
 1;
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Consul::API::Event - Consul event API
+
+=head1 SYNOPSIS
+
+    use Consul;
+    my $event = Consul->event;
+
+=head1 DESCRIPTION
+
+The Event API is used to fire new events and to query the available events.
+
+This API is fully documented at L<https://www.consul.io/docs/agent/http/event.html>.
+
+=head1 METHODS
+
+=head2 fire
+
+=head2 list
+
+=head1 SEE ALSO
+
+    L<Consul>
+
+=cut

@@ -56,3 +56,42 @@ sub list {
 }
 
 1;
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Consul::API::ACL - Consul ACL API
+
+=head1 SYNOPSIS
+
+    use Consul;
+    my $acl = Consul->acl;
+
+=head1 DESCRIPTION
+
+The ACL API is used to create, update, destroy, and query ACL tokens.
+
+This API is fully documented at L<https://www.consul.io/docs/agent/http/acl.html>.
+
+=head1 METHODS
+
+=head2 create
+
+=head2 update
+
+=head2 destroy
+
+=head2 info
+
+=head2 clone
+
+=head2 list
+
+=head1 SEE ALSO
+
+    L<Consul>
+
+=cut

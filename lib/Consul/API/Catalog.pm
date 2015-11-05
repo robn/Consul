@@ -92,3 +92,46 @@ has node     => ( is => 'ro', isa => class_type('Consul::API::Catalog::ShortNode
 has services => ( is => 'ro', isa => HashRef[class_type('Consul::API::Agent::Service')], init_arg => 'Services', required => 1, coerce => sub { +{ map { $_ => Consul::API::Agent::Service->new($_[0]->{$_}) } keys %{$_[0]} } } );
 
 1;
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Consul::API::Catalog - Consul catalog API
+
+=head1 SYNOPSIS
+
+    use Consul;
+    my $catalog = Consul->catalog;
+    say for map { $_->name} @{$catalog->nodes};
+
+=head1 DESCRIPTION
+
+The catalog API is used to register and deregister nodes, services and checks.
+It also provides query endpoints.
+
+This API is fully documented at L<https://www.consul.io/docs/agent/http/catalog.html>.
+
+=head1 METHODS
+
+=head2 datacenters
+
+=head2 nodes
+
+=head2 services
+
+=head2 service
+
+=head2 register
+
+=head2 deregister
+
+=head2 node
+
+=head1 SEE ALSO
+
+    L<Consul>
+
+=cut
