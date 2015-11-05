@@ -99,6 +99,14 @@ This module is quite low-level. You're expected to have a good understanding of
 Consul and its API to understand the methods this module provides. See L</SEE ALSO>
 for further reading.
 
+=head1 WARNING
+
+This is still under development. The documentation isn't all there yet (in
+particular about the return types) and a couple of APIs aren't implemented.
+It's still very useful and I don't expect huge changes, but please take care
+when upgrading. Open an issue if there's something you need that isn't here and
+I'll get right on it!
+
 =head1 CONSTRUCTOR
 
 =head2 new
