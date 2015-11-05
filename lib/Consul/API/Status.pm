@@ -43,7 +43,7 @@ sub peers {
 
 =head1 NAME
 
-Consul::API::Status - Consul system status API
+Consul::API::Status - System status API
 
 =head1 SYNOPSIS
 

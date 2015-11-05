@@ -81,7 +81,7 @@ has checks  => ( is => 'ro', isa => ArrayRef[class_type('Consul::API::Health::Ch
 
 =head1 NAME
 
-Consul::API::Health - Consul health API
+Consul::API::Health - Health check API
 
 =head1 SYNOPSIS
 

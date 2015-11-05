@@ -73,7 +73,7 @@ has lock_index   => ( is => 'ro', isa => Int, init_arg => 'LockIndex',   require
 
 =head1 NAME
 
-Consul::API::KV - Consul key/value store API
+Consul::API::KV - Key/value store API
 
 =head1 SYNOPSIS
 

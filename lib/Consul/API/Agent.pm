@@ -182,7 +182,7 @@ has member => ( is => 'ro', isa => class_type('Consul::API::Agent::Member'), ini
 
 =head1 NAME
 
-Consul::API::Agent - Consul agent API
+Consul::API::Agent - Agent API
 
 =head1 SYNOPSIS
 

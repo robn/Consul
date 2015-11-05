@@ -61,7 +61,7 @@ has l_time         => ( is => 'ro', isa => Int,        init_arg => 'LTime',     
 
 =head1 NAME
 
-Consul::API::Event - Consul event API
+Consul::API::Event - User event API
 
 =head1 SYNOPSIS
 

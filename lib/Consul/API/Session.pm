@@ -58,7 +58,7 @@ sub list {
 
 =head1 NAME
 
-Consul::API::Session - Consul session API
+Consul::API::Session - Sessions API
 
 =head1 SYNOPSIS
 

@@ -99,7 +99,7 @@ has services => ( is => 'ro', isa => HashRef[class_type('Consul::API::Agent::Ser
 
 =head1 NAME
 
-Consul::API::Catalog - Consul catalog API
+Consul::API::Catalog - Catalog (nodes and services) API
 
 =head1 SYNOPSIS
 

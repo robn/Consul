@@ -149,7 +149,7 @@ C<Consul-E<gt>new> is called implicitly.
 
 =head2 kv
 
-Key/Value store API. See L<Consul::API::KV>.
+Key/value store API. See L<Consul::API::KV>.
 
 =head2 agent
 
@@ -169,11 +169,11 @@ Sessions API. See L<Consul::API::Session>.
 
 =head2 acl
 
-Access Control List API. See L<Consul::API::ACL>.
+Access control API. See L<Consul::API::ACL>.
 
 =head2 event
 
-User Event API. See L<Consul::API::Event>.
+User event API. See L<Consul::API::Event>.
 
 =head2 status
 

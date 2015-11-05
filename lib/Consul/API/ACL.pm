@@ -63,7 +63,7 @@ sub list {
 
 =head1 NAME
 
-Consul::API::ACL - Consul ACL API
+Consul::API::ACL - Access control API
 
 =head1 SYNOPSIS
 

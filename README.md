@@ -60,7 +60,7 @@ request an API context directly from the Consul package. In that case,
 
 ## kv
 
-Key/Value store API. See [Consul::API::KV](https://metacpan.org/pod/Consul::API::KV).
+Key/value store API. See [Consul::API::KV](https://metacpan.org/pod/Consul::API::KV).
 
 ## agent
 
@@ -80,11 +80,11 @@ Sessions API. See [Consul::API::Session](https://metacpan.org/pod/Consul::API::S
 
 ## acl
 
-Access Control List API. See [Consul::API::ACL](https://metacpan.org/pod/Consul::API::ACL).
+Access control API. See [Consul::API::ACL](https://metacpan.org/pod/Consul::API::ACL).
 
 ## event
 
-User Event API. See [Consul::API::Event](https://metacpan.org/pod/Consul::API::Event).
+User event API. See [Consul::API::Event](https://metacpan.org/pod/Consul::API::Event).
 
 ## status
 
