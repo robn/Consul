@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.002     2015-11-05 23:08:14+11:00 Australia/Melbourne
  - Skip tests if Test::Consul can't start a consul instance
 
 0.001     2015-11-05 12:56:16+11:00 Australia/Melbourne
