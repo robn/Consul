@@ -9,20 +9,24 @@ use Test::Consul;
 
 use Consul;
 
-my $tc = Test::Consul->start;
+my $tc = eval { Test::Consul->start };
 
-my $acl = Consul->acl(port => $tc->port);
-ok $acl, "got ACL API object";
+SKIP: {
+    skip "consul test environment not available", 7 unless $tc;
 
-TODO: {
-    local $TODO = "Consul::API::ACL not yet implemented";
+    my $acl = Consul->acl(port => $tc->port);
+    ok $acl, "got ACL API object";
 
-    lives_ok { $acl->create } "call to 'create' succeeded";
-    lives_ok { $acl->update } "call to 'update' succeeded";
-    lives_ok { $acl->destroy } "call to 'destroy' succeeded";
-    lives_ok { $acl->info } "call to 'info' succeeded";
-    lives_ok { $acl->clone } "call to 'clone' succeeded";
-    lives_ok { $acl->list } "call to 'list' succeeded";
+    TODO: {
+        local $TODO = "Consul::API::ACL not yet implemented";
+
+        lives_ok { $acl->create } "call to 'create' succeeded";
+        lives_ok { $acl->update } "call to 'update' succeeded";
+        lives_ok { $acl->destroy } "call to 'destroy' succeeded";
+        lives_ok { $acl->info } "call to 'info' succeeded";
+        lives_ok { $acl->clone } "call to 'clone' succeeded";
+        lives_ok { $acl->list } "call to 'list' succeeded";
+    }
 }
 
 done_testing;

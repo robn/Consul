@@ -9,12 +9,16 @@ use Test::Consul;
 
 use Consul;
 
-my $tc = Test::Consul->start;
+my $tc = eval { Test::Consul->start };
 
-my $status = Consul->status(port => $tc->port);
-ok $status, "got status API object";
+SKIP: {
+    skip "consul test environment not available", 3 unless $tc;
 
-lives_ok { $status->leader } "call to 'leader' succeeded";
-lives_ok { $status->peers } "call to 'peers' succeeded";
+    my $status = Consul->status(port => $tc->port);
+    ok $status, "got status API object";
+
+    lives_ok { $status->leader } "call to 'leader' succeeded";
+    lives_ok { $status->peers } "call to 'peers' succeeded";
+}
 
 done_testing;
