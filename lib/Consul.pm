@@ -2,8 +2,6 @@ package Consul;
 
 # ABSTRACT: Client library for consul
 
-use feature qw(state);
-
 use namespace::autoclean;
 
 use HTTP::Tiny 0.014;
@@ -40,6 +38,8 @@ sub _prep_url {
     $url;
 }
 
+my $json = JSON->new->utf8->allow_nonref;
+
 sub _api_exec {
     my ($self, $path, $method, %args) = @_;
 
@@ -51,7 +51,6 @@ sub _api_exec {
 
     return if !defined $res->{content} || length $res->{content} == 0;
 
-    state $json = JSON->new->utf8->allow_nonref;
     return $json->decode($res->{content});
 }
 
