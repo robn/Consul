@@ -1,4 +1,5 @@
 {{$NEXT}}
+ - Don't use defined-or, gets things working on Perl 5.8
 
 0.003     2015-11-06 16:36:14+11:00 Australia/Melbourne
  - Don't require feature(state), might get things working in Perl < 5.10

@@ -145,7 +145,7 @@ has id      => ( is => 'ro', isa => Str,           init_arg => 'ID',      requir
 has service => ( is => 'ro', isa => Str,           init_arg => 'Service', required => 1 );
 has address => ( is => 'ro', isa => Str,           init_arg => 'Address', required => 1 );
 has port    => ( is => 'ro', isa => Int,           init_arg => 'Port',    required => 1 );
-has tags    => ( is => 'ro', isa => ArrayRef[Str], init_arg => 'Tags',    required => 1, coerce => sub { $_[0] // [] } );
+has tags    => ( is => 'ro', isa => ArrayRef[Str], init_arg => 'Tags',    required => 1, coerce => sub { $_[0] || [] } );
 
 package Consul::API::Agent::Member;
 
@@ -155,7 +155,7 @@ use Types::Standard qw(Str Int HashRef);
 has name         => ( is => 'ro', isa => Str,          init_arg => 'Name',        required => 1 );
 has addr         => ( is => 'ro', isa => Str,          init_arg => 'Addr',        required => 1 );
 has port         => ( is => 'ro', isa => Int,          init_arg => 'Port',        required => 1 );
-has tags         => ( is => 'ro', isa => HashRef[Str], init_arg => 'Tags',        required => 1, coerce => sub { $_[0] // {} } );
+has tags         => ( is => 'ro', isa => HashRef[Str], init_arg => 'Tags',        required => 1, coerce => sub { $_[0] || {} } );
 has status       => ( is => 'ro', isa => Int,          init_arg => 'Status',      required => 1 );
 has protocol_min => ( is => 'ro', isa => Int,          init_arg => 'ProtocolMin', required => 1 );
 has protocol_max => ( is => 'ro', isa => Int,          init_arg => 'ProtocolMax', required => 1 );
@@ -171,7 +171,7 @@ use Types::Standard qw(HashRef);
 use Type::Utils qw(class_type);
 
 # XXX raw hash. not happy about this, but the list of config keys don't seem to be consistent across environments
-has config => ( is => 'ro', isa => HashRef,                                  init_arg => 'Config', required => 1, coerce => sub { $_[0] // {} } );
+has config => ( is => 'ro', isa => HashRef,                                  init_arg => 'Config', required => 1, coerce => sub { $_[0] || {} } );
 has member => ( is => 'ro', isa => class_type('Consul::API::Agent::Member'), init_arg => 'Member', required => 1, coerce => sub { Consul::API::Agent::Member->new($_[0]) } );
 
 1;
