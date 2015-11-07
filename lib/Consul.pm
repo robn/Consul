@@ -13,15 +13,15 @@ use Moo;
 use Type::Utils qw(class_type);
 use Types::Standard qw(Str Int Bool HashRef);
 
-has host => ( is => 'ro', isa => Str, default => '127.0.0.1' );
-has port => ( is => 'ro', isa => Int, default => 8500 );
+has host => ( is => 'ro', isa => Str, default => sub { '127.0.0.1' } );
+has port => ( is => 'ro', isa => Int, default => sub { 8500 } );
 
-has ssl => ( is => 'ro', isa => Bool, default => 0 );
+has ssl => ( is => 'ro', isa => Bool, default => sub { 0 } );
 
 has http => ( is => 'lazy', isa => class_type('HTTP::Tiny') );
 sub _build_http { HTTP::Tiny->new(timeout => 15) };
 
-has _version_prefix => ( is => 'ro', isa => Str, default => '/v1' );
+has _version_prefix => ( is => 'ro', isa => Str, default => sub { '/v1' } );
 
 has _url_base => ( is => 'lazy' );
 sub _build__url_base {
