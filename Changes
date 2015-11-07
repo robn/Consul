@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.004     2015-11-07 15:03:25+11:00 Australia/Melbourne
  - Fix accessor defaults (Moo requires them to be coderefs)
  - Don't use defined-or, gets things working on Perl 5.8
 
