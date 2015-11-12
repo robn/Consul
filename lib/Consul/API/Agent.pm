@@ -27,22 +27,30 @@ use Carp qw(croak);
 
 sub checks {
     my ($self, %args) = @_;
-    [ map { Consul::API::Agent::Check->new(%$_) } values %{$$self->_api_exec($$self->_agent_endpoint."/checks", 'GET', %args)} ];
+    $$self->_api_exec($$self->_agent_endpoint."/checks", 'GET', %args, sub {
+        [ map { Consul::API::Agent::Check->new(%$_) } values %{$_[0]} ]
+    });
 }
 
 sub services {
     my ($self, %args) = @_;
-    [ map { Consul::API::Agent::Service->new(%$_) } values %{$$self->_api_exec($$self->_agent_endpoint."/services", 'GET', %args)} ];
+    $$self->_api_exec($$self->_agent_endpoint."/services", 'GET', %args, sub {
+        [ map { Consul::API::Agent::Service->new(%$_) } values %{$_[0]} ]
+    });
 }
 
 sub members {
     my ($self, %args) = @_;
-    [ map { Consul::API::Agent::Member->new(%$_) } @{$$self->_api_exec($$self->_agent_endpoint."/members", 'GET', %args)} ];
+    $$self->_api_exec($$self->_agent_endpoint."/members", 'GET', %args, sub {
+        [ map { Consul::API::Agent::Member->new(%$_) } @{$_[0]} ]
+    });
 }
 
 sub self {
     my ($self, %args) = @_;
-    Consul::API::Agent::Self->new(%{$$self->_api_exec($$self->_agent_endpoint."/self", 'GET', %args)});
+    $$self->_api_exec($$self->_agent_endpoint."/self", 'GET', %args, sub {
+        Consul::API::Agent::Self->new(%{$_[0]})
+    });
 }
 
 sub maintenance {

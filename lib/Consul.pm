@@ -11,7 +11,7 @@ use Carp qw(croak);
 
 use Moo;
 use Type::Utils qw(class_type);
-use Types::Standard qw(Str Int Bool HashRef);
+use Types::Standard qw(Str Int Bool HashRef CodeRef);
 
 has host => ( is => 'ro', isa => Str, default => sub { '127.0.0.1' } );
 has port => ( is => 'ro', isa => Int, default => sub { 8500 } );
@@ -40,19 +40,45 @@ sub _prep_url {
 
 my $json = JSON->new->utf8->allow_nonref;
 
-sub _api_exec {
+sub _prep_request {
     my ($self, $path, $method, %args) = @_;
 
     my $content = delete $args{_content};
     delete $args{$_} for grep { m/^_/ } keys %args;
 
-    my $res = $self->http->request($method, $self->_prep_url($path, %args), defined $content ? { content => $content } : {});
-    croak "$res->{status} $res->{reason}: $res->{content}" unless $res->{success};
-
-    return if !defined $res->{content} || length $res->{content} == 0;
-
-    return $json->decode($res->{content});
+    return ($method, $self->_prep_url($path, %args), $content);
 }
+
+sub _prep_response {
+    my ($self, $status, $reason, $content) = @_;
+
+    croak "$status $reason: $content" unless int($status/100) == 2;
+
+    return if !defined $content || length $content == 0;
+
+    return $json->decode($content);
+}
+
+has req_cb => ( is => 'lazy', isa => CodeRef );
+sub _build_req_cb {
+    sub {
+        my ($self, $method, $url, $content, $cb) = @_;
+        my $res = $self->http->request($method, $url, defined $content ? { content => $content } : {});
+        $cb->(@$res{qw(status reason content)});
+    }
+}
+
+sub _api_exec {
+    my $resp_cb = $#_ % 2 == 1 && ref $_[$#_] eq 'CODE' ? pop @_ : sub { pop @_ };
+    my ($self, $path, $method, %args) = @_;
+
+    my $r;
+    my $cli_cb = delete $args{cb} // sub { $r = shift };
+
+    $self->req_cb->($self, $self->_prep_request($path, $method, %args), sub { $cli_cb->($resp_cb->($self->_prep_response(@_))) });
+
+    return $r;
+};
 
 with qw(
     Consul::API::ACL
@@ -141,6 +167,34 @@ C<http>
 A C<HTTP::Tiny> object to use to access the server. If not specified, one will
 be created.
 
+=item *
+
+C<req_cb>
+
+A callback to an alternative method to make the actual HTTP request. The
+callback is of the form:
+
+    sub {
+        my ($self, $method, $url, $content, $cb) = @_;
+        ... do HTTP call
+        $cb->($rstatus, $rreason, $rcontent);
+    }
+
+In other words, make a request to C<$url> using HTTP method C<$method>, with
+C<$content> in the request body. Call C<$cb> with the returned status, reason
+and body content.
+
+Consul itself provides a default C<req_cb> that uses the C<http> option to make
+calls to the server. If you provide one, C<http> will not be used.
+
+C<req_cb> can be used in conjunction with the C<cb> option to all API method
+endpoints to get asynchronous behaviour. It's recommended however that you
+don't use this directly, but rather use a module like L<AnyEvent::Consul> to
+take care of that for you.
+
+If you just want to use this module to make simple calls to your Consul
+cluster, you can ignore this option entirely.
+
 =back
 
 =head1 ENDPOINTS
@@ -186,6 +240,28 @@ User event API. See L<Consul::API::Event>.
 
 System status API. See L<Consul::API::Status>.
 
+=head1 METHOD OPTIONS
+
+All API methods implemented by the endpoints can take a number of arguments.
+Most of those are documented in the endpoint documentation. There are however
+some that are common to all methods:
+
+=over 4
+
+=item *
+
+C<cb>
+
+A callback to call with the results of the method. Without this, the results
+are returned from the method, but only if C<req_cb> is synchronous. If an
+asynchronous C<req_cb> is used without a C<cb> being passed to the method, the
+method return value is undefined.
+
+If you just want to use this module to make simple calls to your Consul
+cluster, you can ignore this option entirely.
+
+=back
+
 =head1 SEE ALSO
 
 =over 4
@@ -193,6 +269,10 @@ System status API. See L<Consul::API::Status>.
 =item *
 
 L<HTTP::Tiny> - for further HTTP client configuration, especially SSL configuration
+
+=item *
+
+L<AnyEvent::Consul> - a wrapper provided asynchronous operation
 
 =item *
 

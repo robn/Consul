@@ -55,6 +55,32 @@ This constructor returns a new Consul client object. Valid arguments include:
     A `HTTP::Tiny` object to use to access the server. If not specified, one will
     be created.
 
+- `req_cb`
+
+    A callback to an alternative method to make the actual HTTP request. The
+    callback is of the form:
+
+        sub {
+            my ($self, $method, $url, $content, $cb) = @_;
+            ... do HTTP call
+            $cb->($rstatus, $rreason, $rcontent);
+        }
+
+    In other words, make a request to `$url` using HTTP method `$method`, with
+    `$content` in the request body. Call `$cb` with the returned status, reason
+    and body content.
+
+    Consul itself provides a default `req_cb` that uses the `http` option to make
+    calls to the server. If you provide one, `http` will not be used.
+
+    `req_cb` can be used in conjunction with the `cb` option to all API method
+    endpoints to get asynchronous behaviour. It's recommended however that you
+    don't use this directly, but rather use a module like [AnyEvent::Consul](https://metacpan.org/pod/AnyEvent::Consul) to
+    take care of that for you.
+
+    If you just want to use this module to make simple calls to your Consul
+    cluster, you can ignore this option entirely.
+
 # ENDPOINTS
 
 Individual API endpoints are implemented in separate modules. The following
@@ -98,9 +124,26 @@ User event API. See [Consul::API::Event](https://metacpan.org/pod/Consul::API::E
 
 System status API. See [Consul::API::Status](https://metacpan.org/pod/Consul::API::Status).
 
+# METHOD OPTIONS
+
+All API methods implemented by the endpoints can take a number of arguments.
+Most of those are documented in the endpoint documentation. There are however
+some that are common to all methods:
+
+- `cb`
+
+    A callback to call with the results of the method. Without this, the results
+    are returned from the method, but only if `req_cb` is synchronous. If an
+    asynchronous `req_cb` is used without a `cb` being passed to the method, the
+    method return value is undefined.
+
+    If you just want to use this module to make simple calls to your Consul
+    cluster, you can ignore this option entirely.
+
 # SEE ALSO
 
 - [HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny) - for further HTTP client configuration, especially SSL configuration
+- [AnyEvent::Consul](https://metacpan.org/pod/AnyEvent::Consul) - a wrapper provided asynchronous operation
 - [https://www.consul.io/docs/agent/http.html](https://www.consul.io/docs/agent/http.html) - Consul HTTP API documentation
 
 # SUPPORT

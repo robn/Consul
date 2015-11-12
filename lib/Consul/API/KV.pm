@@ -28,7 +28,9 @@ use Carp qw(croak);
 sub get {
     my ($self, $key, %args) = @_;
     croak 'usage: $kv->get($key, [%args])' if grep { !defined } ($key);
-    Consul::API::KV::Response->new($$self->_api_exec($$self->_kv_endpoint."/".$key, 'GET', %args)->[0]);
+    $$self->_api_exec($$self->_kv_endpoint."/".$key, 'GET', %args, sub {
+        Consul::API::KV::Response->new($_[0]->[0]);
+    });
 }
 
 sub put {

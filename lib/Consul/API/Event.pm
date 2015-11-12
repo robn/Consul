@@ -34,7 +34,9 @@ sub fire {
 
 sub list {
     my ($self, %args) = @_;
-    [ map { Consul::API::Event::Event->new(%$_) } @{$$self->_api_exec($$self->_event_endpoint."/list", 'GET', %args)} ];
+    $$self->_api_exec($$self->_event_endpoint."/list", 'GET', %args, sub {
+        [ map { Consul::API::Event::Event->new(%$_) } @{$_[0]} ]
+    });
 }
 
 package Consul::API::Event::Event;

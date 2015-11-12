@@ -32,7 +32,9 @@ sub datacenters {
 
 sub nodes {
     my ($self, %args) = @_;
-    [ map { Consul::API::Catalog::ShortNode->new(%$_) } @{$$self->_api_exec($$self->_catalog_endpoint."/nodes", 'GET', %args)} ];
+    $$self->_api_exec($$self->_catalog_endpoint."/nodes", 'GET', %args, sub {
+        [ map { Consul::API::Catalog::ShortNode->new(%$_) } @{$_[0]} ]
+    });
 }
 
 sub services {
@@ -43,7 +45,9 @@ sub services {
 sub service {
     my ($self, $service, %args) = @_;
     croak 'usage: $catalog->service($service, [%args])' if grep { !defined } ($service);
-    [ map { Consul::API::Catalog::Service->new(%$_) } @{$$self->_api_exec($$self->_catalog_endpoint."/service/".$service, 'GET', %args)} ];
+    $$self->_api_exec($$self->_catalog_endpoint."/service/".$service, 'GET', %args, sub {
+        [ map { Consul::API::Catalog::Service->new(%$_) } @{$_[0]} ]
+    });
 }
 
 sub register {
@@ -59,7 +63,9 @@ sub deregister {
 sub node {
     my ($self, $node, %args) = @_;
     croak 'usage: $catalog->node($node, [%args])' if grep { !defined } ($node);
-    Consul::API::Catalog::Node->new($$self->_api_exec($$self->_catalog_endpoint."/node/".$node, 'GET', %args));
+    $$self->_api_exec($$self->_catalog_endpoint."/node/".$node, 'GET', %args, sub {
+        Consul::API::Catalog::Node->new($_[0])
+    });
 }
 
 package Consul::API::Catalog::ShortNode;
