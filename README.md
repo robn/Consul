@@ -67,8 +67,10 @@ This constructor returns a new Consul client object. Valid arguments include:
         }
 
     In other words, make a request to `$url` using HTTP method `$method`, with
-    `$content` in the request body. Call `$cb` with the returned status, reason
-    and body content.
+    `$content` in the request body, adding in the headers from `$headers`. Call
+    `$cb` with the returned status, reason, headers and body content.
+
+    `$headers` is a [Hash::MultiValue](https://metacpan.org/pod/Hash::MultiValue). The returned headers must also be one.
 
     Consul itself provides a default `req_cb` that uses the `http` option to make
     calls to the server. If you provide one, `http` will not be used.

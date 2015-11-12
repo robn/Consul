@@ -7,6 +7,7 @@ use namespace::autoclean;
 use HTTP::Tiny 0.014;
 use URI::Escape qw(uri_escape);
 use JSON::MaybeXS qw(JSON);
+use Hash::MultiValue;
 use Carp qw(croak);
 
 use Moo;
@@ -46,11 +47,13 @@ sub _prep_request {
     my $content = delete $args{_content};
     delete $args{$_} for grep { m/^_/ } keys %args;
 
-    return ($method, $self->_prep_url($path, %args), $content);
+    my $headers = Hash::MultiValue->new;
+
+    return ($method, $self->_prep_url($path, %args), $headers, $content);
 }
 
 sub _prep_response {
-    my ($self, $status, $reason, $content) = @_;
+    my ($self, $status, $reason, $headers, $content) = @_;
 
     croak "$status $reason: $content" unless int($status/100) == 2;
 
@@ -62,9 +65,14 @@ sub _prep_response {
 has req_cb => ( is => 'lazy', isa => CodeRef );
 sub _build_req_cb {
     sub {
-        my ($self, $method, $url, $content, $cb) = @_;
-        my $res = $self->http->request($method, $url, defined $content ? { content => $content } : {});
-        $cb->(@$res{qw(status reason content)});
+        my ($self, $method, $url, $headers, $content, $cb) = @_;
+        my $res = $self->http->request($method, $url, {
+            (defined $headers ? ( headers => $headers->mixed ) : ()),
+            (defined $content ? ( content => $content ) : ()),
+        });
+        my $rheaders = Hash::MultiValue->from_mixed(delete $res->{headers} // {});
+        my ($rstatus, $rreason, $rcontent) = @$res{qw(status reason content)};
+        $cb->($rstatus, $rreason, $rheaders, $rcontent);
     }
 }
 
@@ -181,8 +189,10 @@ callback is of the form:
     }
 
 In other words, make a request to C<$url> using HTTP method C<$method>, with
-C<$content> in the request body. Call C<$cb> with the returned status, reason
-and body content.
+C<$content> in the request body, adding in the headers from C<$headers>. Call
+C<$cb> with the returned status, reason, headers and body content.
+
+C<$headers> is a L<Hash::MultiValue>. The returned headers must also be one.
 
 Consul itself provides a default C<req_cb> that uses the C<http> option to make
 calls to the server. If you provide one, C<http> will not be used.
