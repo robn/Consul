@@ -126,13 +126,13 @@ Hostname or IP address of an Consul server (default: C<127.0.0.1>)
 
 C<port>
 
-Port where the etcd server is listening (default: C<8500>)
+Port where the Consul server is listening (default: C<8500>)
 
 =item *
 
 C<ssl>
 
-Use SSL/TLS (ie HTTPS) when talking to the etcd server (default: off)
+Use SSL/TLS (ie HTTPS) when talking to the Consul server (default: off)
 
 =item *
 

@@ -44,11 +44,11 @@ This constructor returns a new Consul client object. Valid arguments include:
 
 - `port`
 
-    Port where the etcd server is listening (default: `8500`)
+    Port where the Consul server is listening (default: `8500`)
 
 - `ssl`
 
-    Use SSL/TLS (ie HTTPS) when talking to the etcd server (default: off)
+    Use SSL/TLS (ie HTTPS) when talking to the Consul server (default: off)
 
 - `http`
 
