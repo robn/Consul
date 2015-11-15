@@ -44,18 +44,19 @@ my $json = JSON->new->utf8->allow_nonref;
 sub _prep_request {
     my ($self, $path, $method, %args) = @_;
 
-    my $content = delete $args{_content};
-    delete $args{$_} for grep { m/^_/ } keys %args;
+    my %uargs = map { m/^_/ ? () : ($_ => $args{$_}) } keys %args;
 
     my $headers = Hash::MultiValue->new;
 
-    return ($method, $self->_prep_url($path, %args), $headers, $content);
+    return ($method, $self->_prep_url($path, %uargs), $headers, $args{_content});
 }
 
 sub _prep_response {
-    my ($self, $status, $reason, $headers, $content) = @_;
+    my ($self, $status, $reason, $headers, $content, %args) = @_;
 
-    croak "$status $reason: $content" unless int($status/100) == 2;
+    my $valid_cb = $args{_valid_cb} // sub { int($_[0]/100) == 2 };
+
+    croak "$status $reason: $content" unless $valid_cb->($status);
 
     return if !defined $content || length $content == 0;
 
@@ -83,7 +84,10 @@ sub _api_exec {
     my $r;
     my $cli_cb = delete $args{cb} // sub { $r = shift };
 
-    $self->req_cb->($self, $self->_prep_request($path, $method, %args), sub { $cli_cb->($resp_cb->($self->_prep_response(@_))) });
+    $self->req_cb->($self, $self->_prep_request($path, $method, %args), sub {
+        my ($data, $meta) = $self->_prep_response(@_, %args);
+        $cli_cb->($resp_cb->($data), $meta);
+    });
 
     return $r;
 };
