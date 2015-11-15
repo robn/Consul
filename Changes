@@ -1,4 +1,5 @@
 {{$NEXT}}
+ - API change: Return undef when KV key not found
 
 0.005     2015-11-13 21:21:52+11:00 Australia/Melbourne
  - Support for async calls

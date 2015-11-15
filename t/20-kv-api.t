@@ -12,14 +12,15 @@ use Consul;
 my $tc = eval { Test::Consul->start };
 
 SKIP: {
-    skip "consul test environment not available", 12 unless $tc;
+    skip "consul test environment not available", 13 unless $tc;
 
     my $kv = Consul->kv(port => $tc->port);
     ok $kv, "got KV API object";
 
     my $r;
 
-    throws_ok { $r = $kv->get("foo") } qr/^404 /, "key not found";
+    lives_ok { $r = $kv->get("foo") } "KV get succeeded";
+    is $r, undef, "key not found";
 
     lives_ok { $r = $kv->put(foo => "bar") } "KV put succeeded";
     lives_ok { $r = $kv->get("foo") } "KV get succeeded";
@@ -27,7 +28,7 @@ SKIP: {
     is $r->value, "bar", "returned KV has correct value";
 
     lives_ok { $r = $kv->delete("foo") } "KV delete succeeded";
-    throws_ok { $r = $kv->get("foo") } qr/^404 /, "key not found";
+    is $kv->get("foo"), undef, "key not found";
 
     lives_ok { $r = $kv->put(foo => 1) } "KV put succeeded";
     lives_ok { $r = $kv->put(bar => 2) } "KV put succeeded";
