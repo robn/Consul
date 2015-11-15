@@ -142,6 +142,19 @@ some that are common to all methods:
     If you just want to use this module to make simple calls to your Consul
     cluster, you can ignore this option entirely.
 
+# BLOCKING QUERIES
+
+Some Consul API endpoints support a feature called a "blocking query". These
+endpoints allow long-polling for changes, and support some extra information
+about the server state, including the Raft index, in the response headers.
+
+The corresponding endpoint methods, when called in array context, will return a
+second value. This is an object with three methods, `index`, `last_contact`
+and `known_leader`, corresponding to the similarly-named header fields. You
+can use these to set up state watches, CAS writes, and so on.
+
+See the Consul API docs for more information.
+
 # SEE ALSO
 
 - [HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny) - for further HTTP client configuration, especially SSL configuration

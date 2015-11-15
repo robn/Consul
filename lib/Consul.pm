@@ -8,6 +8,7 @@ use HTTP::Tiny 0.014;
 use URI::Escape qw(uri_escape);
 use JSON::MaybeXS qw(JSON);
 use Hash::MultiValue;
+use Try::Tiny;
 use Carp qw(croak);
 
 use Moo;
@@ -58,9 +59,12 @@ sub _prep_response {
 
     croak "$status $reason: $content" unless $valid_cb->($status);
 
-    return if !defined $content || length $content == 0;
+    my $data;
+    $data = $json->decode($content) if defined $content && length $content > 0;
 
-    return $json->decode($content);
+    my $meta = try { Consul::Meta->new(%$headers) };
+
+    return ($data, $meta);
 }
 
 has req_cb => ( is => 'lazy', isa => CodeRef );
@@ -81,15 +85,15 @@ sub _api_exec {
     my $resp_cb = $#_ % 2 == 1 && ref $_[$#_] eq 'CODE' ? pop @_ : sub { pop @_ };
     my ($self, $path, $method, %args) = @_;
 
-    my $r;
-    my $cli_cb = delete $args{cb} // sub { $r = shift };
+    my @r;
+    my $cli_cb = delete $args{cb} // sub { @r = @_ };
 
     $self->req_cb->($self, $self->_prep_request($path, $method, %args), sub {
         my ($data, $meta) = $self->_prep_response(@_, %args);
         $cli_cb->($resp_cb->($data), $meta);
     });
 
-    return $r;
+    return wantarray ? @r : shift @r;
 };
 
 with qw(
@@ -105,6 +109,18 @@ with qw(
 
 use Consul::Check;
 use Consul::Service;
+
+
+package
+    Consul::Meta; # hide from PAUSE
+
+use Moo;
+use Types::Standard qw(Int Bool);
+
+has index        => ( is => 'ro', isa => Int,  init_arg => 'x-consul-index',       required => 1 );
+has last_contact => ( is => 'ro', isa => Int,  init_arg => 'x-consul-lastcontact', required => 1 );
+has known_leader => ( is => 'ro', isa => Bool, init_arg => 'x-consul-knownleader', required => 1, coerce => sub { { true => 1, false => 0 }->{$_[0]} // $_[0] } );
+
 
 1;
 
@@ -275,6 +291,19 @@ If you just want to use this module to make simple calls to your Consul
 cluster, you can ignore this option entirely.
 
 =back
+
+=head1 BLOCKING QUERIES
+
+Some Consul API endpoints support a feature called a "blocking query". These
+endpoints allow long-polling for changes, and support some extra information
+about the server state, including the Raft index, in the response headers.
+
+The corresponding endpoint methods, when called in array context, will return a
+second value. This is an object with three methods, C<index>, C<last_contact>
+and C<known_leader>, corresponding to the similarly-named header fields. You
+can use these to set up state watches, CAS writes, and so on.
+
+See the Consul API docs for more information.
 
 =head1 SEE ALSO
 
