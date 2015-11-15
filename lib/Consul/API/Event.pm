@@ -29,7 +29,9 @@ sub fire {
     my ($self, $name, %args) = @_;
     croak 'usage: $event->fire($name, [%args])' if grep { !defined } ($name);
     my $payload = delete $args{payload};
-    Consul::API::Event::Event->new($$self->_api_exec($$self->_event_endpoint."/fire/".$name, 'PUT', %args, ($payload ? (_content => $payload) : ())));
+    $$self->_api_exec($$self->_event_endpoint."/fire/".$name, 'PUT', %args, ($payload ? (_content => $payload) : ()), sub {
+        Consul::API::Event::Event->new($_[0])
+    });
 }
 
 sub list {
