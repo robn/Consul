@@ -12,7 +12,7 @@ use Consul;
 my $tc = eval { Test::Consul->start };
 
 SKIP: {
-    skip "consul test environment not available", 13 unless $tc;
+    skip "consul test environment not available", 17 unless $tc;
 
     my $kv = Consul->kv(port => $tc->port);
     ok $kv, "got KV API object";
@@ -23,16 +23,20 @@ SKIP: {
     is $r, undef, "key not found";
 
     lives_ok { $r = $kv->put(foo => "bar") } "KV put succeeded";
-    lives_ok { $r = $kv->get("foo") } "KV get succeeded";
+    ok $r, "key was updated";
 
+    lives_ok { $r = $kv->get("foo") } "KV get succeeded";
     is $r->value, "bar", "returned KV has correct value";
 
     lives_ok { $r = $kv->delete("foo") } "KV delete succeeded";
     is $kv->get("foo"), undef, "key not found";
 
     lives_ok { $r = $kv->put(foo => 1) } "KV put succeeded";
+    ok $r, "key was updated";
     lives_ok { $r = $kv->put(bar => 2) } "KV put succeeded";
+    ok $r, "key was updated";
     lives_ok { $r = $kv->put(baz => 3) } "KV put succeeded";
+    ok $r, "key was updated";
 
     lives_ok { $r = $kv->keys("") } "KV keys succeeded";
     is_deeply [sort @$r], [sort qw(foo bar baz)], "return KV keys are correct";
