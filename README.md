@@ -50,10 +50,10 @@ This constructor returns a new Consul client object. Valid arguments include:
 
     Use SSL/TLS (ie HTTPS) when talking to the Consul server (default: off)
 
-- `http`
+- `timeout`
 
-    A `HTTP::Tiny` object to use to access the server. If not specified, one will
-    be created.
+    Request timeout. If a request to Consul takes longer that this, the endpoint
+    method will fail (default: 15).
 
 - `req_cb`
 
@@ -72,8 +72,9 @@ This constructor returns a new Consul client object. Valid arguments include:
 
     `$headers` is a [Hash::MultiValue](https://metacpan.org/pod/Hash::MultiValue). The returned headers must also be one.
 
-    Consul itself provides a default `req_cb` that uses the `http` option to make
-    calls to the server. If you provide one, `http` will not be used.
+    Consul itself provides a default `req_cb` that uses [HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny) to make
+    calls to the server. If you provide one, you should honour the value of the
+    `timeout` argument.
 
     `req_cb` can be used in conjunction with the `cb` option to all API method
     endpoints to get asynchronous behaviour. It's recommended however that you

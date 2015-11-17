@@ -20,8 +20,10 @@ has port => ( is => 'ro', isa => Int, default => sub { 8500 } );
 
 has ssl => ( is => 'ro', isa => Bool, default => sub { 0 } );
 
-has http => ( is => 'lazy', isa => class_type('HTTP::Tiny') );
-sub _build_http { HTTP::Tiny->new(timeout => 15) };
+has timeout => ( is => 'ro', isa => Int, default => sub { 15 } );
+
+has _http => ( is => 'lazy', isa => class_type('HTTP::Tiny') );
+sub _build_http { HTTP::Tiny->new(timeout => shift->timeout) };
 
 has _version_prefix => ( is => 'ro', isa => Str, default => sub { '/v1' } );
 
@@ -36,7 +38,7 @@ sub _prep_url {
     my $trailing = $path =~ m{/$};
     my $url = $self->_url_base.join('/', map { uri_escape($_) } split('/', $path));
     $url .= '/' if $trailing;
-    $url .= '?'.$self->http->www_form_urlencode(\%args) if %args;
+    $url .= '?'.$self->_http->www_form_urlencode(\%args) if %args;
     $url;
 }
 
@@ -71,7 +73,7 @@ has req_cb => ( is => 'lazy', isa => CodeRef );
 sub _build_req_cb {
     sub {
         my ($self, $method, $url, $headers, $content, $cb) = @_;
-        my $res = $self->http->request($method, $url, {
+        my $res = $self->_http->request($method, $url, {
             (defined $headers ? ( headers => $headers->mixed ) : ()),
             (defined $content ? ( content => $content ) : ()),
         });
@@ -190,10 +192,10 @@ Use SSL/TLS (ie HTTPS) when talking to the Consul server (default: off)
 
 =item *
 
-C<http>
+C<timeout>
 
-A C<HTTP::Tiny> object to use to access the server. If not specified, one will
-be created.
+Request timeout. If a request to Consul takes longer that this, the endpoint
+method will fail (default: 15).
 
 =item *
 
@@ -214,8 +216,9 @@ C<$cb> with the returned status, reason, headers and body content.
 
 C<$headers> is a L<Hash::MultiValue>. The returned headers must also be one.
 
-Consul itself provides a default C<req_cb> that uses the C<http> option to make
-calls to the server. If you provide one, C<http> will not be used.
+Consul itself provides a default C<req_cb> that uses L<HTTP::Tiny> to make
+calls to the server. If you provide one, you should honour the value of the
+C<timeout> argument.
 
 C<req_cb> can be used in conjunction with the C<cb> option to all API method
 endpoints to get asynchronous behaviour. It's recommended however that you
