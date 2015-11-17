@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.007     2015-11-18 08:51:27+11:00 Australia/Melbourne
  - API change: Add timeout option, remove http option
 
 0.006     2015-11-16 09:34:58+11:00 Australia/Melbourne
