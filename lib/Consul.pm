@@ -23,7 +23,7 @@ has ssl => ( is => 'ro', isa => Bool, default => sub { 0 } );
 has timeout => ( is => 'ro', isa => Int, default => sub { 15 } );
 
 has _http => ( is => 'lazy', isa => class_type('HTTP::Tiny') );
-sub _build_http { HTTP::Tiny->new(timeout => shift->timeout) };
+sub _build__http { HTTP::Tiny->new(timeout => shift->timeout) };
 
 has _version_prefix => ( is => 'ro', isa => Str, default => sub { '/v1' } );
 
