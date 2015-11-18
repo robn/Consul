@@ -1,5 +1,6 @@
 {{$NEXT}}
  - Fix _http builder, get it passing tests again
+ - Silence warning during croak when call fails without content
 
 0.007     2015-11-18 08:51:27+11:00 Australia/Melbourne
  - API change: Add timeout option, remove http option

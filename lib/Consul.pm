@@ -59,7 +59,7 @@ sub _prep_response {
 
     my $valid_cb = $args{_valid_cb} // sub { int($_[0]/100) == 2 };
 
-    croak "$status $reason: $content" unless $valid_cb->($status);
+    $content //= "[no content]" and croak "$status $reason: $content" unless $valid_cb->($status);
 
     my $data;
     $data = $json->decode($content) if defined $content && length $content > 0;
