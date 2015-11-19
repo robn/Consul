@@ -57,9 +57,9 @@ sub _prep_request {
 sub _prep_response {
     my ($self, $status, $reason, $headers, $content, %args) = @_;
 
-    my $valid_cb = $args{_valid_cb} // sub { int($_[0]/100) == 2 };
+    my $valid_cb = $args{_valid_cb} || sub { int($_[0]/100) == 2 };
 
-    $content //= "[no content]" and croak "$status $reason: $content" unless $valid_cb->($status);
+    $content ||= "[no content]" and croak "$status $reason: $content" unless $valid_cb->($status);
 
     my $data;
     $data = $json->decode($content) if defined $content && length $content > 0;
@@ -77,7 +77,7 @@ sub _build_req_cb {
             (defined $headers ? ( headers => $headers->mixed ) : ()),
             (defined $content ? ( content => $content ) : ()),
         });
-        my $rheaders = Hash::MultiValue->from_mixed(delete $res->{headers} // {});
+        my $rheaders = Hash::MultiValue->from_mixed(delete $res->{headers} || {});
         my ($rstatus, $rreason, $rcontent) = @$res{qw(status reason content)};
         $cb->($rstatus, $rreason, $rheaders, $rcontent);
     }
@@ -88,7 +88,7 @@ sub _api_exec {
     my ($self, $path, $method, %args) = @_;
 
     my @r;
-    my $cli_cb = delete $args{cb} // sub { @r = @_ };
+    my $cli_cb = delete $args{cb} || sub { @r = @_ };
 
     $self->req_cb->($self, $self->_prep_request($path, $method, %args), sub {
         my ($data, $meta) = $self->_prep_response(@_, %args);
@@ -121,7 +121,7 @@ use Types::Standard qw(Int Bool);
 
 has index        => ( is => 'ro', isa => Int,  init_arg => 'x-consul-index',       required => 1 );
 has last_contact => ( is => 'ro', isa => Int,  init_arg => 'x-consul-lastcontact', required => 1 );
-has known_leader => ( is => 'ro', isa => Bool, init_arg => 'x-consul-knownleader', required => 1, coerce => sub { { true => 1, false => 0 }->{$_[0]} // $_[0] } );
+has known_leader => ( is => 'ro', isa => Bool, init_arg => 'x-consul-knownleader', required => 1, coerce => sub { my $r = { true => 1, false => 0 }->{$_[0]}; defined $r ? $r : $_[0] } );
 
 
 1;
