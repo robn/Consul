@@ -39,6 +39,21 @@ sub get {
     );
 }
 
+sub get_all {
+    my ($self, $key, %args) = @_;
+    croak 'usage: $kv->get_all($key, [%args])' if grep { !defined } ($key);
+    $$self->_api_exec($$self->_kv_endpoint."/".$key, 'GET', %args,
+        recurse => 1,
+        _valid_cb => sub {
+            int($_[0]/100) == 2 || int($_[0]) == 404
+        },
+        sub {
+            return undef unless defined $_[0];
+            [ map { Consul::API::KV::Response->new($_) } @{$_[0]} ]
+        }
+    );
+}
+
 sub put {
     my ($self, $key, $value, %args) = @_;
     croak 'usage: $kv->put($key, $value, [%args])' if grep { !defined } ($key, $value);
@@ -97,6 +112,8 @@ This API is fully documented at L<https://www.consul.io/docs/agent/http/kv.html>
 =head1 METHODS
 
 =head2 get
+
+=head2 get_all
 
 =head2 put
 
