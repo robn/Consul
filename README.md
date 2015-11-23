@@ -55,7 +55,7 @@ This constructor returns a new Consul client object. Valid arguments include:
     Request timeout. If a request to Consul takes longer that this, the endpoint
     method will fail (default: 15).
 
-- `req_cb`
+- `request_cb`
 
     A callback to an alternative method to make the actual HTTP request. The
     callback is of the form:
@@ -72,11 +72,11 @@ This constructor returns a new Consul client object. Valid arguments include:
 
     `$headers` is a [Hash::MultiValue](https://metacpan.org/pod/Hash::MultiValue). The returned headers must also be one.
 
-    Consul itself provides a default `req_cb` that uses [HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny) to make
+    Consul itself provides a default `request_cb` that uses [HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny) to make
     calls to the server. If you provide one, you should honour the value of the
     `timeout` argument.
 
-    `req_cb` can be used in conjunction with the `cb` option to all API method
+    `request_cb` can be used in conjunction with the `cb` option to all API method
     endpoints to get asynchronous behaviour. It's recommended however that you
     don't use this directly, but rather use a module like [AnyEvent::Consul](https://metacpan.org/pod/AnyEvent::Consul) to
     take care of that for you.
@@ -148,8 +148,8 @@ some that are common to all methods:
 - `cb`
 
     A callback to call with the results of the method. Without this, the results
-    are returned from the method, but only if `req_cb` is synchronous. If an
-    asynchronous `req_cb` is used without a `cb` being passed to the method, the
+    are returned from the method, but only if `request_cb` is synchronous. If an
+    asynchronous `request_cb` is used without a `cb` being passed to the method, the
     method return value is undefined.
 
     If you just want to use this module to make simple calls to your Consul

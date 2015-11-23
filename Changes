@@ -1,4 +1,5 @@
 {{$NEXT}}
+ - API change: Rename req_cb to request_cb
  - Separate error_cb attr for async modules to avoid croak
 
 0.010     2015-11-23 20:13:16+11:00 Australia/Melbourne

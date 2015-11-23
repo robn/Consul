@@ -73,8 +73,8 @@ sub _prep_response {
     return ($data, $meta);
 }
 
-has req_cb => ( is => 'lazy', isa => CodeRef );
-sub _build_req_cb {
+has request_cb => ( is => 'lazy', isa => CodeRef );
+sub _build_request_cb {
     sub {
         my ($self, $method, $url, $headers, $content, $cb) = @_;
         my $res = $self->_http->request($method, $url, {
@@ -101,7 +101,7 @@ sub _api_exec {
     my @r;
     my $cli_cb = delete $args{cb} || sub { @r = @_ };
 
-    $self->req_cb->($self, $self->_prep_request($path, $method, %args), sub {
+    $self->request_cb->($self, $self->_prep_request($path, $method, %args), sub {
         my ($data, $meta) = $self->_prep_response(@_, %args);
         $cli_cb->($resp_cb->($data), $meta);
     });
@@ -210,7 +210,7 @@ method will fail (default: 15).
 
 =item *
 
-C<req_cb>
+C<request_cb>
 
 A callback to an alternative method to make the actual HTTP request. The
 callback is of the form:
@@ -227,11 +227,11 @@ C<$cb> with the returned status, reason, headers and body content.
 
 C<$headers> is a L<Hash::MultiValue>. The returned headers must also be one.
 
-Consul itself provides a default C<req_cb> that uses L<HTTP::Tiny> to make
+Consul itself provides a default C<request_cb> that uses L<HTTP::Tiny> to make
 calls to the server. If you provide one, you should honour the value of the
 C<timeout> argument.
 
-C<req_cb> can be used in conjunction with the C<cb> option to all API method
+C<request_cb> can be used in conjunction with the C<cb> option to all API method
 endpoints to get asynchronous behaviour. It's recommended however that you
 don't use this directly, but rather use a module like L<AnyEvent::Consul> to
 take care of that for you.
@@ -311,8 +311,8 @@ some that are common to all methods:
 C<cb>
 
 A callback to call with the results of the method. Without this, the results
-are returned from the method, but only if C<req_cb> is synchronous. If an
-asynchronous C<req_cb> is used without a C<cb> being passed to the method, the
+are returned from the method, but only if C<request_cb> is synchronous. If an
+asynchronous C<request_cb> is used without a C<cb> being passed to the method, the
 method return value is undefined.
 
 If you just want to use this module to make simple calls to your Consul
