@@ -84,6 +84,18 @@ This constructor returns a new Consul client object. Valid arguments include:
     If you just want to use this module to make simple calls to your Consul
     cluster, you can ignore this option entirely.
 
+- `error_cb`
+
+    A callback to an alternative method to handle internal errors (usually HTTP
+    errors). The callback is of the form:
+
+        sub {
+            my ($err) = @_;
+            ... output $err ...
+        }
+
+    The default callback simply calls `croak`.
+
 # ENDPOINTS
 
 Individual API endpoints are implemented in separate modules. The following

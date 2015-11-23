@@ -59,7 +59,11 @@ sub _prep_response {
 
     my $valid_cb = $args{_valid_cb} || sub { int($_[0]/100) == 2 };
 
-    $content ||= "[no content]" and croak "$status $reason: $content" unless $valid_cb->($status);
+    unless ($valid_cb->($status)) {
+        $content ||= "[no content]";
+        $self->error_cb->("$status $reason: $content");
+        return;
+    }
 
     my $data;
     $data = $json->decode($content) if defined $content && length $content > 0;
@@ -80,6 +84,13 @@ sub _build_req_cb {
         my $rheaders = Hash::MultiValue->from_mixed(delete $res->{headers} || {});
         my ($rstatus, $rreason, $rcontent) = @$res{qw(status reason content)};
         $cb->($rstatus, $rreason, $rheaders, $rcontent);
+    }
+}
+
+has error_cb => ( is => 'lazy', isa => CodeRef );
+sub _build_error_cb {
+    sub {
+        croak @_;
     }
 }
 
@@ -227,6 +238,20 @@ take care of that for you.
 
 If you just want to use this module to make simple calls to your Consul
 cluster, you can ignore this option entirely.
+
+=item *
+
+C<error_cb>
+
+A callback to an alternative method to handle internal errors (usually HTTP
+errors). The callback is of the form:
+
+    sub {
+        my ($err) = @_;
+        ... output $err ...
+    }
+
+The default callback simply calls C<croak>.
 
 =back
 
