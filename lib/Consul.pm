@@ -65,14 +65,6 @@ sub _prep_request {
 sub _prep_response {
     my ($self, $resp, %args) = @_;
 
-    my $valid_cb = $args{_valid_cb} || sub { int($resp->status/100) == 2 };
-
-    unless ($valid_cb->($resp->status)) {
-        my $content = $resp->content || "[no content]";
-        $self->error_cb->(sprintf("%s %s: %s", $resp->status, $resp->reason, $content), $resp);
-        return;
-    }
-
     my $data;
     $data = $json->decode($resp->content) if length $resp->content > 0;
 
@@ -116,7 +108,17 @@ sub _api_exec {
     my $cli_cb = delete $args{cb} || sub { @r = @_ };
 
     $self->request_cb->($self, $self->_prep_request($path, $method, %args, sub {
-        my ($data, $meta) = $self->_prep_response(@_, %args);
+        my ($resp) = @_;
+
+        my $valid_cb = $args{_valid_cb} || sub { int($resp->status/100) == 2 };
+
+        unless ($valid_cb->($resp->status)) {
+            my $content = $resp->content || "[no content]";
+            $self->error_cb->(sprintf("%s %s: %s", $resp->status, $resp->reason, $content), $resp);
+            return;
+        }
+
+        my ($data, $meta) = $self->_prep_response(@_);
         $cli_cb->($resp_cb->($data), $meta);
     }));
 
