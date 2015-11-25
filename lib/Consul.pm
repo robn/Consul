@@ -461,11 +461,7 @@ See the Consul API docs for more information.
 
 =item *
 
-L<HTTP::Tiny> - for further HTTP client configuration, especially SSL configuration
-
-=item *
-
-L<AnyEvent::Consul> - a wrapper provided asynchronous operation
+L<AnyEvent::Consul> - a wrapper providing asynchronous operation
 
 =item *
 
@@ -478,7 +474,7 @@ L<https://www.consul.io/docs/agent/http.html> - Consul HTTP API documentation
 =head2 Bugs / Feature Requests
 
 Please report any bugs or feature requests through the issue tracker
-at L<https://github.com/robn/p5-consul/issues>.
+at L<https://github.com/robn/Consul/issues>.
 You will be notified automatically of any progress on your issue.
 
 =head2 Source Code
@@ -486,9 +482,9 @@ You will be notified automatically of any progress on your issue.
 This is open source software. The code repository is available for
 public review and contribution under the terms of the license.
 
-L<https://github.com/robn/p5-consul>
+L<https://github.com/robn/Consul>
 
-  git clone https://github.com/robn/p5-consul.git
+  git clone https://github.com/robn/Consul.git
 
 =head1 AUTHORS
 

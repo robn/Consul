@@ -217,8 +217,7 @@ See the Consul API docs for more information.
 
 # SEE ALSO
 
-- [HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny) - for further HTTP client configuration, especially SSL configuration
-- [AnyEvent::Consul](https://metacpan.org/pod/AnyEvent::Consul) - a wrapper provided asynchronous operation
+- [AnyEvent::Consul](https://metacpan.org/pod/AnyEvent::Consul) - a wrapper providing asynchronous operation
 - [https://www.consul.io/docs/agent/http.html](https://www.consul.io/docs/agent/http.html) - Consul HTTP API documentation
 
 # SUPPORT
@@ -226,7 +225,7 @@ See the Consul API docs for more information.
 ## Bugs / Feature Requests
 
 Please report any bugs or feature requests through the issue tracker
-at [https://github.com/robn/p5-consul/issues](https://github.com/robn/p5-consul/issues).
+at [https://github.com/robn/Consul/issues](https://github.com/robn/Consul/issues).
 You will be notified automatically of any progress on your issue.
 
 ## Source Code
@@ -234,9 +233,9 @@ You will be notified automatically of any progress on your issue.
 This is open source software. The code repository is available for
 public review and contribution under the terms of the license.
 
-[https://github.com/robn/p5-consul](https://github.com/robn/p5-consul)
+[https://github.com/robn/Consul](https://github.com/robn/Consul)
 
-    git clone https://github.com/robn/p5-consul.git
+    git clone https://github.com/robn/Consul.git
 
 # AUTHORS
 
