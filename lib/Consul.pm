@@ -58,6 +58,7 @@ sub _prep_request {
         headers  => $headers,
         content  => $args{_content} || "",
         callback => $callback,
+        args     => \%uargs,
     );
 }
 
@@ -68,7 +69,7 @@ sub _prep_response {
 
     unless ($valid_cb->($resp->status)) {
         my $content = $resp->content || "[no content]";
-        $self->error_cb->(sprintf "%s %s: %s", $resp->status, $resp->reason, $content);
+        $self->error_cb->(sprintf("%s %s: %s", $resp->status, $resp->reason, $content), $resp);
         return;
     }
 
@@ -95,6 +96,7 @@ sub _build_request_cb {
             reason  => $rreason,
             headers => $rheaders,
             content => $rcontent,
+            request => $req,
         ));
     }
 }
@@ -102,7 +104,7 @@ sub _build_request_cb {
 has error_cb => ( is => 'lazy', isa => CodeRef );
 sub _build_error_cb {
     sub {
-        croak @_;
+        croak shift;
     }
 }
 
@@ -140,7 +142,7 @@ package
     Consul::Request; # hide from PAUSE
 
 use Moo;
-use Types::Standard qw(Str CodeRef);
+use Types::Standard qw(Str CodeRef HashRef);
 use Type::Utils qw(class_type);
 
 has method   => ( is => 'ro', isa => Str,                            required => 1 );
@@ -148,6 +150,7 @@ has url      => ( is => 'ro', isa => Str,                            required =>
 has headers  => ( is => 'ro', isa => class_type('Hash::MultiValue'), required => 1 );
 has content  => ( is => 'ro', isa => Str,                            required => 1 );
 has callback => ( is => 'ro', isa => CodeRef,                        required => 1 );
+has args     => ( is => 'ro', isa => HashRef,                        required => 1 );
 
 
 package
@@ -161,6 +164,7 @@ has status   => ( is => 'ro', isa => Int,                            required =>
 has reason   => ( is => 'ro', isa => Str,                            required => 1 );
 has headers  => ( is => 'ro', isa => class_type('Hash::MultiValue'), default  => sub { Hash::MultiValue->new } );
 has content  => ( is => 'ro', isa => Str,                            default  => sub { "" } );
+has request  => ( is => 'ro', isa => class_type('Consul::Request'),  required => 1 );
 
 
 package
@@ -297,6 +301,12 @@ C<callback>
 A callback to call when the request is completed. It takes a single
 C<Consul::Response> object as its parameter.
 
+=item *
+
+C<args>
+
+A hashref containing the original arguments passed in to the endpoint method.
+
 =back
 
 The C<callback> function should be called with a C<Consul::Response> object
@@ -328,6 +338,12 @@ A L<Hash::MultiValue> containing the response headers.
 C<content>
 
 Any body content returned in the response.
+
+=item *
+
+C<request>
+
+The C<Consul::Request> object passed to the callback.
 
 =back
 

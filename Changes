@@ -1,5 +1,6 @@
 {{$NEXT}}
 - API change: Switch request_cb to take and return a parameter object
+- API change: Include original args with request, and request with response
 
 0.011     2015-11-24 08:55:35+11:00 Australia/Melbourne
  - API change: Rename req_cb to request_cb

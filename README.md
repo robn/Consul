@@ -91,6 +91,10 @@ This constructor returns a new Consul client object. Valid arguments include:
         A callback to call when the request is completed. It takes a single
         `Consul::Response` object as its parameter.
 
+    - `args`
+
+        A hashref containing the original arguments passed in to the endpoint method.
+
     The `callback` function should be called with a `Consul::Response` object
     containing the values returned by the Consul server in response to the request.
     Create one with `new`, passing the following attributes:
@@ -110,6 +114,10 @@ This constructor returns a new Consul client object. Valid arguments include:
     - `content`
 
         Any body content returned in the response.
+
+    - `request`
+
+        The `Consul::Request` object passed to the callback.
 
     Consul itself provides a default `request_cb` that uses [HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny) to make
     calls to the server. If you provide one, you should honour the value of the
