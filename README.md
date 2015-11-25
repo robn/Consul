@@ -61,16 +61,55 @@ This constructor returns a new Consul client object. Valid arguments include:
     callback is of the form:
 
         sub {
-            my ($self, $method, $url, $content, $cb) = @_;
+            my ($self, $req) = @_;
             ... do HTTP call
-            $cb->($rstatus, $rreason, $rcontent);
+            $req->callback->(Consul::Response->new(...));
         }
 
-    In other words, make a request to `$url` using HTTP method `$method`, with
-    `$content` in the request body, adding in the headers from `$headers`. Call
-    `$cb` with the returned status, reason, headers and body content.
+    `$req` is a `Consul::Request` object, and has the following attributes:
 
-    `$headers` is a [Hash::MultiValue](https://metacpan.org/pod/Hash::MultiValue). The returned headers must also be one.
+    - `method`
+
+        The HTTP method for the request.
+
+    - `url`
+
+        The complete URL to request. This is fully formed, and includes scheme, host,
+        port and query parameters. You shouldn't need to touch it.
+
+    - `headers`
+
+        A [Hash::MultiValue](https://metacpan.org/pod/Hash::MultiValue) object containing any headers that should be added to the
+        request.
+
+    - `content`
+
+        The body content for the request.
+
+    - `callback`
+
+        A callback to call when the request is completed. It takes a single
+        `Consul::Response` object as its parameter.
+
+    The `callback` function should be called with a `Consul::Response` object
+    containing the values returned by the Consul server in response to the request.
+    Create one with `new`, passing the following attributes:
+
+    - `status`
+
+        The integer status code.
+
+    - `reason`
+
+        The status reason phrase.
+
+    - `headers`
+
+        A [Hash::MultiValue](https://metacpan.org/pod/Hash::MultiValue) containing the response headers.
+
+    - `content`
+
+        Any body content returned in the response.
 
     Consul itself provides a default `request_cb` that uses [HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny) to make
     calls to the server. If you provide one, you should honour the value of the

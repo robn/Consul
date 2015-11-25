@@ -45,30 +45,37 @@ sub _prep_url {
 my $json = JSON->new->utf8->allow_nonref;
 
 sub _prep_request {
+    my $callback = pop @_;
     my ($self, $path, $method, %args) = @_;
 
     my %uargs = map { m/^_/ ? () : ($_ => $args{$_}) } keys %args;
 
     my $headers = Hash::MultiValue->new;
 
-    return ($method, $self->_prep_url($path, %uargs), $headers, $args{_content});
+    return Consul::Request->new(
+        method   => $method,
+        url      => $self->_prep_url($path, %uargs),
+        headers  => $headers,
+        content  => $args{_content} || "",
+        callback => $callback,
+    );
 }
 
 sub _prep_response {
-    my ($self, $status, $reason, $headers, $content, %args) = @_;
+    my ($self, $resp, %args) = @_;
 
-    my $valid_cb = $args{_valid_cb} || sub { int($_[0]/100) == 2 };
+    my $valid_cb = $args{_valid_cb} || sub { int($resp->status/100) == 2 };
 
-    unless ($valid_cb->($status)) {
-        $content ||= "[no content]";
-        $self->error_cb->("$status $reason: $content");
+    unless ($valid_cb->($resp->status)) {
+        my $content = $resp->content || "[no content]";
+        $self->error_cb->(sprintf "%s %s: %s", $resp->status, $resp->reason, $content);
         return;
     }
 
     my $data;
-    $data = $json->decode($content) if defined $content && length $content > 0;
+    $data = $json->decode($resp->content) if length $resp->content > 0;
 
-    my $meta = try { Consul::Meta->new(%$headers) };
+    my $meta = try { Consul::Meta->new(%{$resp->headers}) };
 
     return ($data, $meta);
 }
@@ -76,14 +83,19 @@ sub _prep_response {
 has request_cb => ( is => 'lazy', isa => CodeRef );
 sub _build_request_cb {
     sub {
-        my ($self, $method, $url, $headers, $content, $cb) = @_;
-        my $res = $self->_http->request($method, $url, {
-            (defined $headers ? ( headers => $headers->mixed ) : ()),
-            (defined $content ? ( content => $content ) : ()),
+        my ($self, $req) = @_;
+        my $res = $self->_http->request($req->method, $req->url, {
+            headers => $req->headers->mixed,
+            content => $req->content,
         });
         my $rheaders = Hash::MultiValue->from_mixed(delete $res->{headers} || {});
         my ($rstatus, $rreason, $rcontent) = @$res{qw(status reason content)};
-        $cb->($rstatus, $rreason, $rheaders, $rcontent);
+        $req->callback->(Consul::Response->new(
+            status  => $rstatus,
+            reason  => $rreason,
+            headers => $rheaders,
+            content => $rcontent,
+        ));
     }
 }
 
@@ -101,10 +113,10 @@ sub _api_exec {
     my @r;
     my $cli_cb = delete $args{cb} || sub { @r = @_ };
 
-    $self->request_cb->($self, $self->_prep_request($path, $method, %args), sub {
+    $self->request_cb->($self, $self->_prep_request($path, $method, %args, sub {
         my ($data, $meta) = $self->_prep_response(@_, %args);
         $cli_cb->($resp_cb->($data), $meta);
-    });
+    }));
 
     return wantarray ? @r : shift @r;
 };
@@ -122,6 +134,33 @@ with qw(
 
 use Consul::Check;
 use Consul::Service;
+
+
+package
+    Consul::Request; # hide from PAUSE
+
+use Moo;
+use Types::Standard qw(Str CodeRef);
+use Type::Utils qw(class_type);
+
+has method   => ( is => 'ro', isa => Str,                            required => 1 );
+has url      => ( is => 'ro', isa => Str,                            required => 1 );
+has headers  => ( is => 'ro', isa => class_type('Hash::MultiValue'), required => 1 );
+has content  => ( is => 'ro', isa => Str,                            required => 1 );
+has callback => ( is => 'ro', isa => CodeRef,                        required => 1 );
+
+
+package
+    Consul::Response; # hide from PAUSE
+
+use Moo;
+use Types::Standard qw(Str Int);
+use Type::Utils qw(class_type);
+
+has status   => ( is => 'ro', isa => Int,                            required => 1 );
+has reason   => ( is => 'ro', isa => Str,                            required => 1 );
+has headers  => ( is => 'ro', isa => class_type('Hash::MultiValue'), default  => sub { Hash::MultiValue->new } );
+has content  => ( is => 'ro', isa => Str,                            default  => sub { "" } );
 
 
 package
@@ -216,16 +255,81 @@ A callback to an alternative method to make the actual HTTP request. The
 callback is of the form:
 
     sub {
-        my ($self, $method, $url, $content, $cb) = @_;
+        my ($self, $req) = @_;
         ... do HTTP call
-        $cb->($rstatus, $rreason, $rcontent);
+        $req->callback->(Consul::Response->new(...));
     }
 
-In other words, make a request to C<$url> using HTTP method C<$method>, with
-C<$content> in the request body, adding in the headers from C<$headers>. Call
-C<$cb> with the returned status, reason, headers and body content.
+C<$req> is a C<Consul::Request> object, and has the following attributes:
 
-C<$headers> is a L<Hash::MultiValue>. The returned headers must also be one.
+=over 4
+
+=item *
+
+C<method>
+
+The HTTP method for the request.
+
+=item *
+
+C<url>
+
+The complete URL to request. This is fully formed, and includes scheme, host,
+port and query parameters. You shouldn't need to touch it.
+
+=item *
+
+C<headers>
+
+A L<Hash::MultiValue> object containing any headers that should be added to the
+request.
+
+=item *
+
+C<content>
+
+The body content for the request.
+
+=item *
+
+C<callback>
+
+A callback to call when the request is completed. It takes a single
+C<Consul::Response> object as its parameter.
+
+=back
+
+The C<callback> function should be called with a C<Consul::Response> object
+containing the values returned by the Consul server in response to the request.
+Create one with C<new>, passing the following attributes:
+
+=over 4
+
+=item *
+
+C<status>
+
+The integer status code.
+
+=item *
+
+C<reason>
+
+The status reason phrase.
+
+=item *
+
+C<headers>
+
+A L<Hash::MultiValue> containing the response headers.
+
+=item *
+
+C<content>
+
+Any body content returned in the response.
+
+=back
 
 Consul itself provides a default C<request_cb> that uses L<HTTP::Tiny> to make
 calls to the server. If you provide one, you should honour the value of the
