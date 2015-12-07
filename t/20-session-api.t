@@ -12,20 +12,31 @@ use Consul;
 my $tc = eval { Test::Consul->start };
 
 SKIP: {
-    skip "consul test environment not available", 6 unless $tc;
+    skip "consul test environment not available", 13 unless $tc;
 
     my $session = Consul->session(port => $tc->port);
     ok $session, "got Session API object";
 
-    TODO: {
-        local $TODO = "Consul::API::Session not yet implemented";
+    my ($r, $id);
 
-        lives_ok { $session->create } "call to 'create' succeeded";
-        lives_ok { $session->destroy } "call to 'destroy' succeeded";
-        lives_ok { $session->info } "call to 'info' succeeded";
-        lives_ok { $session->node } "call to 'node' succeeded";
-        lives_ok { $session->list } "call to 'list' succeeded";
-    }
+    lives_ok { $id = $session->create } "call to 'create' succeeded";
+    ok $id, "got session id";
+
+    lives_ok { $r = $session->info($id) } "call to 'info' succeeded";
+    isa_ok $r, "Consul::API::Session::Session", "got session object";
+    is $r->id, $id, "returned session id matches created id";
+
+    lives_ok { $r = $session->destroy($id) } "call to 'destroy' succeeded";
+
+    lives_ok { $r = $session->info($id) } "call to 'info' succeeded";
+    is $r, undef, "session not found";
+
+    my ($id1, $id2);
+    lives_ok { $id1 = $session->create } "call to 'create' succeeded";
+    lives_ok { $id2 = $session->create } "call to 'create' succeeded";
+
+    lives_ok { $r = $session->list } "call to 'list' succeeded";
+    is_deeply([ sort ($id1, $id2) ], [ sort map { $_->id } @$r ], "returned session list matches created session list");
 }
 
 done_testing;

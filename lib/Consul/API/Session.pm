@@ -26,29 +26,68 @@ use Moo;
 use Carp qw(croak);
 
 sub create {
-    # create
-    croak "not yet implemented";
+    my ($self, $session, %args) = @_;
+    $$self->_api_exec($$self->_session_endpoint."/create", 'PUT', %args, ($session ? (_content => $session->to_json) : ()), sub {
+        $_[0]->{ID}
+    });
 }
 
 sub destroy {
-    # destroy
-    croak "not yet implemented";
+    my ($self, $id, %args) = @_;
+    croak 'usage: $session->destroy($id, [%args])' if grep { !defined } ($id);
+    $$self->_api_exec($$self->_session_endpoint."/destroy/".$id, 'PUT', %args)
 }
 
 sub info {
-    # info
-    croak "not yet implemented";
+    my ($self, $id, %args) = @_;
+    croak 'usage: $session->info($id, [%args])' if grep { !defined } ($id);
+    $$self->_api_exec($$self->_session_endpoint."/info/".$id, 'GET', %args,
+        _valid_cb => sub {
+            int($_[0]/100) == 2 || int($_[0]) == 404
+        },
+        sub {
+            return undef unless defined $_[0];
+            Consul::API::Session::Session->new($_[0]->[0])
+        }
+    );
 }
 
 sub node {
-    # node
-    croak "not yet implemented";
+    my ($self, $node, %args) = @_;
+    croak 'usage: $session->node($id, [%args])' if grep { !defined } ($node);
+    $$self->_api_exec($$self->_session_endpoint."/node/".$node, 'GET', %args, sub {
+        [ map { Consul::API::Session::Session->new($_) } @{$_[0]} ]
+    });
 }
 
 sub list {
-    # list
-    croak "not yet implemented";
+    my ($self, %args) = @_;
+    $$self->_api_exec($$self->_session_endpoint."/list", 'GET', %args, sub {
+        [ map { Consul::API::Session::Session->new($_) } @{$_[0]} ]
+    });
 }
+
+sub renew {
+    my ($self, $id, %args) = @_;
+    croak 'usage: $session->renew($id, [%args])' if grep { !defined } ($id);
+    $$self->_api_exec($$self->_session_endpoint."/renew/".$id, 'PUT', %args, sub {
+        Consul::API::Session::Session->new($_[0]->[0])
+    });
+}
+
+package Consul::API::Session::Session;
+
+use Moo;
+use Types::Standard qw(Str Enum ArrayRef Num Int);
+
+has id           => ( is => 'ro', isa => Str,                      init_arg => 'ID',          required => 1 );
+has name         => ( is => 'ro', isa => Str,                      init_arg => 'Name',        required => 1 );
+has behavior     => ( is => 'ro', isa => Enum[qw(release delete)], init_arg => 'Behavior',    required => 1 );
+has ttl          => ( is => 'ro', isa => Str,                      init_arg => 'TTL',         required => 1 );
+has node         => ( is => 'ro', isa => Str,                      init_arg => 'Node',        required => 1 );
+has checks       => ( is => 'ro', isa => ArrayRef[Str],            init_arg => 'Checks',      required => 1 );
+has lock_delay   => ( is => 'ro', isa => Num,                      init_arg => 'LockDelay',   required => 1 );
+has create_index => ( is => 'ro', isa => Int,                      init_arg => 'CreateIndex', required => 1 );
 
 1;
 
@@ -82,6 +121,8 @@ This API is fully documented at L<https://www.consul.io/docs/agent/http/session.
 =head2 node
 
 =head2 list
+
+=head2 renew
 
 =head1 SEE ALSO
 

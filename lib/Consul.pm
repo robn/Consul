@@ -138,6 +138,7 @@ with qw(
 
 use Consul::Check;
 use Consul::Service;
+use Consul::Session;
 
 
 package
