@@ -42,11 +42,8 @@ sub info {
     my ($self, $id, %args) = @_;
     croak 'usage: $session->info($id, [%args])' if grep { !defined } ($id);
     $$self->_api_exec($$self->_session_endpoint."/info/".$id, 'GET', %args,
-        _valid_cb => sub {
-            int($_[0]/100) == 2 || int($_[0]) == 404
-        },
         sub {
-            return undef unless defined $_[0];
+            return undef unless $_[0] && $_[0]->[0];
             Consul::API::Session::Session->new($_[0]->[0])
         }
     );
