@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/robn/Consul.png)](http://travis-ci.org/robn/Consul)
+
 # NAME
 
 Consul - Client library for consul

@@ -187,6 +187,8 @@ has known_leader => ( is => 'ro', isa => Bool, init_arg => 'x-consul-knownleader
 
 =encoding UTF-8
 
+=for markdown [![Build Status](https://secure.travis-ci.org/robn/Consul.png)](http://travis-ci.org/robn/Consul)
+
 =head1 NAME
 
 Consul - Client library for consul
