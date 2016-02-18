@@ -1,5 +1,6 @@
 {{$NEXT}}
 - Error callback for individual endpoint methods
+- Update for Test-Consul 0.003 (Consul 0.6.3)
 
 0.015     2015-12-08 16:59:19+11:00 Australia/Melbourne
 - Fix session/info on nonexistent session (Consul 0.6.0)
