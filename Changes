@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.016     2016-02-19 08:54:46+11:00 Australia/Melbourne
 - Error callback for individual endpoint methods
 - Update for Test-Consul 0.003 (Consul 0.6.3)
 
