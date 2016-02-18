@@ -31,7 +31,7 @@ my %WriteMakefileArgs = (
     "namespace::autoclean" => 0
   },
   "TEST_REQUIRES" => {
-    "Test::Consul" => "0.003",
+    "Test::Consul" => "0.004",
     "Test::Exception" => 0,
     "Test::More" => 0,
     "strict" => 0,
@@ -53,7 +53,7 @@ my %FallbackPrereqs = (
   "JSON::MaybeXS" => 0,
   "Moo" => 0,
   "Moo::Role" => 0,
-  "Test::Consul" => "0.003",
+  "Test::Consul" => "0.004",
   "Test::Exception" => 0,
   "Test::More" => 0,
   "Try::Tiny" => 0,
