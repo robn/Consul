@@ -204,6 +204,19 @@ some that are common to all methods:
     If you just want to use this module to make simple calls to your Consul
     cluster, you can ignore this option entirely.
 
+    `error_cb`
+
+    A callback to an alternative method to handle internal errors (usually HTTP
+    errors).  errors). The callback is of the form:
+
+        sub {
+            my ($err) = @_;
+            ... output $err ...
+        }
+
+    The default callback calls the `error_cb` for the API object itself, which by
+    default, simply calls croak.
+
 # BLOCKING QUERIES
 
 Some Consul API endpoints support a feature called a "blocking query". These

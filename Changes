@@ -1,4 +1,5 @@
 {{$NEXT}}
+- Error callback for individual endpoint methods
 
 0.015     2015-12-08 16:59:19+11:00 Australia/Melbourne
 - Fix session/info on nonexistent session (Consul 0.6.0)

@@ -106,6 +106,7 @@ sub _api_exec {
 
     my @r;
     my $cli_cb = delete $args{cb} || sub { @r = @_ };
+    my $error_cb = delete $args{error_cb} || $self->error_cb;
 
     $self->request_cb->($self, $self->_prep_request($path, $method, %args, sub {
         my ($resp) = @_;
@@ -114,7 +115,7 @@ sub _api_exec {
 
         unless ($valid_cb->($resp->status)) {
             my $content = $resp->content || "[no content]";
-            $self->error_cb->(sprintf("%s %s: %s", $resp->status, $resp->reason, $content), $resp);
+            $error_cb->(sprintf("%s %s: %s", $resp->status, $resp->reason, $content));
             return;
         }
 
@@ -442,6 +443,19 @@ method return value is undefined.
 
 If you just want to use this module to make simple calls to your Consul
 cluster, you can ignore this option entirely.
+
+C<error_cb>
+
+A callback to an alternative method to handle internal errors (usually HTTP
+errors).  errors). The callback is of the form:
+
+    sub {
+        my ($err) = @_;
+        ... output $err ...
+    }
+
+The default callback calls the C<error_cb> for the API object itself, which by
+default, simply calls croak.
 
 =back
 

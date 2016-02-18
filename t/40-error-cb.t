@@ -13,6 +13,12 @@ use Consul;
     ok $agent, "got Agent API object";
 
     dies_ok { $agent->members } "failing call with no error callback dies";
+
+    {
+        my $error = 0;
+        lives_ok { $agent->members(error_cb => sub { $error++ }) } "failing call with error callback succeeds";
+        ok $error, "error callback was called";
+    }
 }
 
 {
@@ -22,6 +28,14 @@ use Consul;
 
     lives_ok { $agent->members } "failing call with global error callback succeeds";
     ok $global_error, "global error callback was called";
+
+    {
+        $global_error = 0;
+        my $error = 0;
+        lives_ok { $agent->members(error_cb => sub { $error++ }) } "failing call with error callback succeeds";
+        ok $error, "error callback was called";
+        ok !$global_error, "global error callback was not called";
+    }
 }
 
 done_testing;
