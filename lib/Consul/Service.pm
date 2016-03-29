@@ -3,17 +3,18 @@ package Consul::Service;
 use namespace::autoclean;
 
 use Moo;
-use Types::Standard qw(Str Int ArrayRef);
+use Types::Standard qw(Str Int Bool ArrayRef);
 use Carp qw(croak);
 use JSON::MaybeXS;
 
-has name     => ( is => 'ro', isa => Str,           required => 1 );
-has id       => ( is => 'ro', isa => Str );
-has port     => ( is => 'ro', isa => Int );
-has tags     => ( is => 'ro', isa => ArrayRef[Str], default => sub { [] } );
-has script   => ( is => 'ro', isa => Str );
-has interval => ( is => 'ro', isa => Str );
-has ttl      => ( is => 'ro', isa => Str );
+has name                => ( is => 'ro', isa => Str,           required => 1 );
+has id                  => ( is => 'ro', isa => Str );
+has port                => ( is => 'ro', isa => Int );
+has tags                => ( is => 'ro', isa => ArrayRef[Str], default => sub { [] } );
+has script              => ( is => 'ro', isa => Str );
+has interval            => ( is => 'ro', isa => Str );
+has ttl                 => ( is => 'ro', isa => Str );
+has enable_tag_override => ( is => 'ro', isa => Bool,          default => sub { 0 } );
 
 sub BUILD {
     my ($self) = @_;
@@ -38,6 +39,7 @@ sub _build__json {
         defined $self->script    ? ( Script   => $self->script   ) : (),
         defined $self->interval  ? ( Interval => $self->interval ) : (),
         defined $self->ttl       ? ( TTL      => $self->ttl      ) : (),
+        EnableTagOverride => ($self->enable_tag_override ? \1 : \0),
     });
 }
 

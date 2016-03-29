@@ -1,4 +1,5 @@
 {{$NEXT}}
+- Add support for enableTagOverride attribute on services
 
 0.016     2016-02-19 08:54:46+11:00 Australia/Melbourne
 - Error callback for individual endpoint methods
