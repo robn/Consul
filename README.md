@@ -256,6 +256,10 @@ public review and contribution under the terms of the license.
 
 - Robert Norris <rob@eatenbyagrue.org>
 
+# CONTRIBUTORS
+
+- Aran Deltac <bluefeet@gmail.com>
+
 # COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2015 by Robert Norris.

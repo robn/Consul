@@ -513,6 +513,16 @@ Robert Norris <rob@eatenbyagrue.org>
 
 =back
 
+=head1 CONTRIBUTORS
+
+=over 4
+
+=item *
+
+Aran Deltac <bluefeet@gmail.com>
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2015 by Robert Norris.
