@@ -1,4 +1,6 @@
 {{$NEXT}}
+- Fixup error_cb test to work even when there is an existing
+  Consul agent listening on port 8500.
 
 0.017     2016-09-22 23:24:53+10:00 Australia/Melbourne
 - Add support for enableTagOverride attribute on services
