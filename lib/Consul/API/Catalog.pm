@@ -81,12 +81,13 @@ package Consul::API::Catalog::Service;
 use Moo;
 use Types::Standard qw(Str Int ArrayRef);
 
-has name    => ( is => 'ro', isa => Str,           init_arg => 'ServiceName', required => 1 );
-has id      => ( is => 'ro', isa => Str,           init_arg => 'ServiceID',   required => 1 );
-has port    => ( is => 'ro', isa => Int,           init_arg => 'ServicePort', required => 1 );
-has node    => ( is => 'ro', isa => Str,           init_arg => 'Node',        required => 1 );
-has address => ( is => 'ro', isa => Str,           init_arg => 'Address',     required => 1 );
-has tags    => ( is => 'ro', isa => ArrayRef[Str], init_arg => 'ServiceTags', required => 1, coerce => sub { $_[0] || [] } );
+has name            => ( is => 'ro', isa => Str,           init_arg => 'ServiceName',    required => 1 );
+has id              => ( is => 'ro', isa => Str,           init_arg => 'ServiceID',      required => 1 );
+has service_address => ( is => 'ro', isa => Str,           init_arg => 'ServiceAddress', required => 1 );
+has port            => ( is => 'ro', isa => Int,           init_arg => 'ServicePort',    required => 1 );
+has node            => ( is => 'ro', isa => Str,           init_arg => 'Node',           required => 1 );
+has address         => ( is => 'ro', isa => Str,           init_arg => 'Address',        required => 1 );
+has tags            => ( is => 'ro', isa => ArrayRef[Str], init_arg => 'ServiceTags',    required => 1, coerce => sub { $_[0] || [] } );
 
 package Consul::API::Catalog::Node;
 
