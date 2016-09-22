@@ -1,6 +1,7 @@
 {{$NEXT}}
 - Add support for enableTagOverride attribute on services
-- Update for Test-Consul 0.004 (Consul 0.6.4)
+- Add support for ServiceAddress attribute on catalog entries
+- Update for Test-Consul 0.005
 
 0.016     2016-02-19 08:54:46+11:00 Australia/Melbourne
 - Error callback for individual endpoint methods
