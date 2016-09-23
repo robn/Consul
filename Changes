@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.018     2016-09-23 13:47:43+10:00 Australia/Melbourne
 - Fixup error_cb test to work even when there is an existing
   Consul agent listening on port 8500.
 - Update for Test-Consul 0.005 (Consul 0.6.1 through 0.7.0+)
