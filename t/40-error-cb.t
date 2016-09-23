@@ -5,11 +5,12 @@ use strict;
 
 use Test::More;
 use Test::Exception;
+use Net::EmptyPort qw( empty_port );
 
 use Consul;
 
 {
-    my $agent = Consul->agent;
+    my $agent = Consul->agent( port=>empty_port() );
     ok $agent, "got Agent API object";
 
     dies_ok { $agent->members } "failing call with no error callback dies";
@@ -23,7 +24,7 @@ use Consul;
 
 {
     my $global_error = 0;
-    my $agent = Consul->agent(error_cb => sub { $global_error++ });
+    my $agent = Consul->agent(error_cb => sub { $global_error++ }, port=>empty_port());
     ok $agent, "got Agent API object with global error callback";
 
     lives_ok { $agent->members } "failing call with global error callback succeeds";
