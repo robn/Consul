@@ -22,6 +22,8 @@ has ssl => ( is => 'ro', isa => Bool, default => sub { 0 } );
 
 has timeout => ( is => 'ro', isa => Int, default => sub { 15 } );
 
+has token => ( is => 'ro', isa => Str, predicate => '_has_token' );
+
 has _http => ( is => 'lazy', isa => class_type('HTTP::Tiny') );
 sub _build__http { HTTP::Tiny->new(timeout => shift->timeout) };
 
@@ -51,6 +53,10 @@ sub _prep_request {
     my %uargs = map { m/^_/ ? () : ($_ => $args{$_}) } keys %args;
 
     my $headers = Hash::MultiValue->new;
+
+    if ($self->_has_token()) {
+        $headers->set( 'X-Consul-Token', $self->token() );
+    }
 
     return Consul::Request->new(
         method   => $method,
@@ -256,6 +262,14 @@ C<timeout>
 
 Request timeout. If a request to Consul takes longer that this, the endpoint
 method will fail (default: 15).
+
+=item *
+
+C<token>
+
+Consul ACL token.  This is used to set the C<X-Consul-Token> HTTP header.  Typically
+Consul agents are pre-configured with a default ACL token, or ACLs are not enabled
+at all, so this option only needs to be set in certain cases.
 
 =item *
 

@@ -1,4 +1,6 @@
 {{$NEXT}}
+- Add a token argument which is used to set the X-Consul-Token
+  HTTP header.
 
 0.018     2016-09-23 13:47:43+10:00 Australia/Melbourne
 - Fixup error_cb test to work even when there is an existing
