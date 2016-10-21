@@ -57,6 +57,12 @@ This constructor returns a new Consul client object. Valid arguments include:
     Request timeout. If a request to Consul takes longer that this, the endpoint
     method will fail (default: 15).
 
+- `token`
+
+    Consul ACL token.  This is used to set the `X-Consul-Token` HTTP header.  Typically
+    Consul agents are pre-configured with a default ACL token, or ACLs are not enabled
+    at all, so this option only needs to be set in certain cases.
+
 - `request_cb`
 
     A callback to an alternative method to make the actual HTTP request. The
