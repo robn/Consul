@@ -11,20 +11,44 @@ use Consul;
 
 Test::Consul->skip_all_if_no_bin;
 
-my $tc = Test::Consul->start;
+my $tc = Test::Consul->start(
+  enable_acls => 1,
+);
 
 my $acl = Consul->acl(port => $tc->port);
 ok $acl, "got ACL API object";
 
-TODO: {
-    local $TODO = "Consul::API::ACL not yet implemented";
+is_deeply(
+  [ sort map { $_->id() } @{ $acl->list() } ],
+  [ sort ('anonymous', $tc->acl_master_token()) ],
+  'initial ACL list looks right',
+);
 
-    lives_ok { $acl->create } "call to 'create' succeeded";
-    lives_ok { $acl->update } "call to 'update' succeeded";
-    lives_ok { $acl->destroy } "call to 'destroy' succeeded";
-    lives_ok { $acl->info } "call to 'info' succeeded";
-    lives_ok { $acl->clone } "call to 'clone' succeeded";
-    lives_ok { $acl->list } "call to 'list' succeeded";
-}
+my $id1 = $acl->create()->id();
+$acl->update({ id=>$id1, name=>'foo' });
+is( $acl->info( $id1 )->name(), 'foo', 'ACL was updated' );
+
+is_deeply(
+  [ sort map { $_->id() } @{ $acl->list() } ],
+  [ sort ('anonymous', $tc->acl_master_token(), $id1) ],
+  'ACL list after create looks right',
+);
+
+my $id2 = $acl->clone( $id1 )->id();
+isnt( $id1, $id2, 'clone has a new ID' );
+
+is_deeply(
+  [ sort map { $_->id() } @{ $acl->list() } ],
+  [ sort ('anonymous', $tc->acl_master_token(), $id1, $id2) ],
+  'ACL list after clone looks right',
+);
+
+$acl->destroy($id1);
+
+is_deeply(
+  [ sort map { $_->id() } @{ $acl->list() } ],
+  [ sort ('anonymous', $tc->acl_master_token(), $id2) ],
+  'ACL list after delete looks right',
+);
 
 done_testing;
