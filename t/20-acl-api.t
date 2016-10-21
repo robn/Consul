@@ -5,7 +5,7 @@ use strict;
 
 use Test::More;
 use Test::Exception;
-use Test::Consul 0.005;
+use Test::Consul 0.007;
 
 use Consul;
 
