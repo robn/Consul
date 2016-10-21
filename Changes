@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.019     2016-10-21 19:15:29+11:00 Australia/Melbourne
 - Add a token argument which is used to set the X-Consul-Token
   HTTP header.
 - Implement the ACL API.
