@@ -1,4 +1,12 @@
 {{$NEXT}}
+- Support hash-to-object coercion in check_register and
+  service_register.
+- Added support for service_id, status, and
+  deregister_critical_service_after to Consul::Check.
+- Added Consul::Check::HTTP, Consul::Check::TCP, and
+  Consul::Check::Docker.
+- Fixed the port argument and added the address argument in
+  Consul::Service.
 
 0.019     2016-10-21 19:15:29+11:00 Australia/Melbourne
 - Add a token argument which is used to set the X-Consul-Token
