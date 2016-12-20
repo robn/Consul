@@ -9,6 +9,7 @@ use JSON::MaybeXS;
 
 has name                => ( is => 'ro', isa => Str,           required => 1 );
 has id                  => ( is => 'ro', isa => Str );
+has address             => ( is => 'ro', isa => Str );
 has port                => ( is => 'ro', isa => Int );
 has tags                => ( is => 'ro', isa => ArrayRef[Str], default => sub { [] } );
 has script              => ( is => 'ro', isa => Str );
@@ -34,7 +35,8 @@ sub _build__json {
     encode_json({
         Name => $self->name,
         defined $self->id        ? ( ID       => $self->id       ) : (),
-        defined $self->port      ? ( Notes    => $self->notes    ) : (),
+        defined $self->port      ? ( Port     => $self->port     ) : (),
+        defined $self->address   ? ( Address  => $self->address  ) : (),
         Tags => $self->tags,
         defined $self->script    ? ( Script   => $self->script   ) : (),
         defined $self->interval  ? ( Interval => $self->interval ) : (),

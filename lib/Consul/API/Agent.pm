@@ -23,7 +23,11 @@ package
 
 use Moo;
 
+use Consul::Check;
+use Consul::Service;
+
 use Carp qw(croak);
+use Scalar::Util qw( blessed );
 
 sub checks {
     my ($self, %args) = @_;
@@ -77,6 +81,10 @@ sub force_leave {
 sub check_register {
     my ($self, $check, %args) = @_;
     croak 'usage: $agent->check_register($check, [%args])' if grep { !defined } ($check);
+    {
+        local $Carp::CarpInternal{ (__PACKAGE__) } = 1;
+        $check = Consul::Check->smart_new($check) if !blessed $check;
+    }
     $$self->_api_exec($$self->_agent_endpoint."/check/register", 'PUT', %args, _content => $check->to_json);
     return;
 }
@@ -112,6 +120,7 @@ sub check_fail {
 sub service_register {
     my ($self, $service, %args) = @_;
     croak 'usage: $agent->service_register($service, [%args])' if grep { !defined } ($service);
+    $service = Consul::Service->new($service) if !blessed $service;
     $$self->_api_exec($$self->_agent_endpoint."/service/register", 'PUT', %args, _content => $service->to_json);
     return;
 }
