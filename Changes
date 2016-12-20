@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.020     2016-12-20 20:59:28+11:00 Australia/Melbourne
 - Support hash-to-object coercion in check_register and
   service_register.
 - Added support for service_id, status, and
