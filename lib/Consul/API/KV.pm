@@ -48,7 +48,7 @@ sub get_all {
             int($_[0]/100) == 2 || int($_[0]) == 404
         },
         sub {
-            return undef unless defined $_[0];
+            return [] unless defined $_[0];
             [ map { Consul::API::KV::Response->new($_) } @{$_[0]} ]
         }
     );
