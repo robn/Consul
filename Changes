@@ -1,4 +1,5 @@
 {{$NEXT}}
+- Bugfix: Updated several agent endpoints to use PUT instead of GET.
 - Bugfix: Setting a value to 0 in the KV store would store an empty
   string.  Now it stores 0.
 

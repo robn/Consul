@@ -67,14 +67,14 @@ sub maintenance {
 sub join {
     my ($self, $address, %args) = @_;
     croak 'usage: $agent->join($address, [%args])' if grep { !defined } ($address);
-    $$self->_api_exec($$self->_agent_endpoint."/join/".$address, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/join/".$address, 'PUT', %args);
     return;
 }
 
 sub force_leave {
     my ($self, $node, %args) = @_;
     croak 'usage: $agent->force_leave($node, [%args])' if grep { !defined } ($node);
-    $$self->_api_exec($$self->_agent_endpoint."/force-leave/".$node, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/force-leave/".$node, 'PUT', %args);
     return;
 }
 
@@ -92,28 +92,28 @@ sub check_register {
 sub check_deregister {
     my ($self, $check_id, %args) = @_;
     croak 'usage: $agent->check_deregister($check_id, [%args])' if grep { !defined } ($check_id);
-    $$self->_api_exec($$self->_agent_endpoint."/check/deregister/".$check_id, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/check/deregister/".$check_id, 'PUT', %args);
     return;
 }
 
 sub check_pass {
     my ($self, $check_id, %args) = @_;
     croak 'usage: $agent->check_pass($check_id, [%args])' if grep { !defined } ($check_id);
-    $$self->_api_exec($$self->_agent_endpoint."/check/pass/".$check_id, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/check/pass/".$check_id, 'PUT', %args);
     return;
 }
 
 sub check_warn {
     my ($self, $check_id, %args) = @_;
     croak 'usage: $agent->check_warn($check_id, [%args])' if grep { !defined } ($check_id);
-    $$self->_api_exec($$self->_agent_endpoint."/check/warn/".$check_id, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/check/warn/".$check_id, 'PUT', %args);
     return;
 }
 
 sub check_fail {
     my ($self, $check_id, %args) = @_;
     croak 'usage: $agent->check_fail($check_id, [%args])' if grep { !defined } ($check_id);
-    $$self->_api_exec($$self->_agent_endpoint."/check/fail/".$check_id, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/check/fail/".$check_id, 'PUT', %args);
     return;
 }
 
@@ -128,7 +128,7 @@ sub service_register {
 sub service_deregister {
     my ($self, $service_id, %args) = @_;
     croak 'usage: $agent->service_deregister($check_id, [%args])' if grep { !defined } ($service_id);
-    $$self->_api_exec($$self->_agent_endpoint."/service/deregister/".$service_id, 'GET', %args);
+    $$self->_api_exec($$self->_agent_endpoint."/service/deregister/".$service_id, 'PUT', %args);
     return;
 }
 
