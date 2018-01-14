@@ -62,7 +62,7 @@ sub _prep_request {
         method   => $method,
         url      => $self->_prep_url($path, %uargs),
         headers  => $headers,
-        content  => $args{_content} || "",
+        content  => defined( $args{_content} ) ? $args{_content} : "",
         callback => $callback,
         args     => \%uargs,
     );

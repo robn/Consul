@@ -1,4 +1,6 @@
 {{$NEXT}}
+- Bugfix: Setting a value to 0 in the KV store would store an empty
+  string.  Now it stores 0.
 
 0.022     2017-08-03 17:00:44+10:00 Australia/Melbourne
 - Bugfix: get_all now returns empty array when no nodes found
