@@ -184,8 +184,8 @@ use Moo;
 use Types::Standard qw(Int Bool);
 
 has index        => ( is => 'ro', isa => Int,  init_arg => 'x-consul-index',       required => 1 );
-has last_contact => ( is => 'ro', isa => Int,  init_arg => 'x-consul-lastcontact', required => 1 );
-has known_leader => ( is => 'ro', isa => Bool, init_arg => 'x-consul-knownleader', required => 1, coerce => sub { my $r = { true => 1, false => 0 }->{$_[0]}; defined $r ? $r : $_[0] } );
+has last_contact => ( is => 'ro', isa => Int,  init_arg => 'x-consul-lastcontact' );
+has known_leader => ( is => 'ro', isa => Bool, init_arg => 'x-consul-knownleader', coerce => sub { my $r = { true => 1, false => 0 }->{$_[0]}; defined $r ? $r : $_[0] } );
 
 
 1;
