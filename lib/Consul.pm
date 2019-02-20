@@ -517,29 +517,27 @@ L<https://github.com/robn/Consul>
 
   git clone https://github.com/robn/Consul.git
 
-=head1 AUTHORS
-
-=over 4
-
-=item *
-
-Robert Norris <rob@eatenbyagrue.org>
-
-=back
-
 =head1 CONTRIBUTORS
 
 =over 4
 
 =item *
 
+Rob N ★ <robn@robn.io>
+
+=item *
+
 Aran Deltac <bluefeet@gmail.com>
+
+=item *
+
+Michael McClimon
 
 =back
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2015 by Robert Norris.
+This software is copyright (c) 2015 by Rob N ★.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
