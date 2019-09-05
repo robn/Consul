@@ -32,7 +32,7 @@ my %WriteMakefileArgs = (
   },
   "TEST_REQUIRES" => {
     "Net::EmptyPort" => 0,
-    "Test::Consul" => "0.013",
+    "Test::Consul" => "0.014",
     "Test::Exception" => 0,
     "Test::More" => 0,
     "strict" => 0,
@@ -55,7 +55,7 @@ my %FallbackPrereqs = (
   "Moo::Role" => 0,
   "Net::EmptyPort" => 0,
   "Scalar::Util" => 0,
-  "Test::Consul" => "0.013",
+  "Test::Consul" => "0.014",
   "Test::Exception" => 0,
   "Test::More" => 0,
   "Try::Tiny" => 0,
