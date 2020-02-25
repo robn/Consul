@@ -87,7 +87,7 @@ This constructor returns a new Consul client object. Valid arguments include:
 
     - `headers`
 
-        A [Hash::MultiValue](https://metacpan.org/pod/Hash::MultiValue) object containing any headers that should be added to the
+        A [Hash::MultiValue](https://metacpan.org/pod/Hash%3A%3AMultiValue) object containing any headers that should be added to the
         request.
 
     - `content`
@@ -117,7 +117,7 @@ This constructor returns a new Consul client object. Valid arguments include:
 
     - `headers`
 
-        A [Hash::MultiValue](https://metacpan.org/pod/Hash::MultiValue) containing the response headers.
+        A [Hash::MultiValue](https://metacpan.org/pod/Hash%3A%3AMultiValue) containing the response headers.
 
     - `content`
 
@@ -127,13 +127,13 @@ This constructor returns a new Consul client object. Valid arguments include:
 
         The `Consul::Request` object passed to the callback.
 
-    Consul itself provides a default `request_cb` that uses [HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny) to make
+    Consul itself provides a default `request_cb` that uses [HTTP::Tiny](https://metacpan.org/pod/HTTP%3A%3ATiny) to make
     calls to the server. If you provide one, you should honour the value of the
     `timeout` argument.
 
     `request_cb` can be used in conjunction with the `cb` option to all API method
     endpoints to get asynchronous behaviour. It's recommended however that you
-    don't use this directly, but rather use a module like [AnyEvent::Consul](https://metacpan.org/pod/AnyEvent::Consul) to
+    don't use this directly, but rather use a module like [AnyEvent::Consul](https://metacpan.org/pod/AnyEvent%3A%3AConsul) to
     take care of that for you.
 
     If you just want to use this module to make simple calls to your Consul
@@ -164,35 +164,35 @@ request an API context directly from the Consul package. In that case,
 
 ## kv
 
-Key/value store API. See [Consul::API::KV](https://metacpan.org/pod/Consul::API::KV).
+Key/value store API. See [Consul::API::KV](https://metacpan.org/pod/Consul%3A%3AAPI%3A%3AKV).
 
 ## agent
 
-Agent API. See [Consul::API::Agent](https://metacpan.org/pod/Consul::API::Agent).
+Agent API. See [Consul::API::Agent](https://metacpan.org/pod/Consul%3A%3AAPI%3A%3AAgent).
 
 ## catalog
 
-Catalog (nodes and services) API. See [Consul::API::Catalog](https://metacpan.org/pod/Consul::API::Catalog).
+Catalog (nodes and services) API. See [Consul::API::Catalog](https://metacpan.org/pod/Consul%3A%3AAPI%3A%3ACatalog).
 
 ## health
 
-Health check API. See [Consul::API::Health](https://metacpan.org/pod/Consul::API::Health).
+Health check API. See [Consul::API::Health](https://metacpan.org/pod/Consul%3A%3AAPI%3A%3AHealth).
 
 ## session
 
-Sessions API. See [Consul::API::Session](https://metacpan.org/pod/Consul::API::Session).
+Sessions API. See [Consul::API::Session](https://metacpan.org/pod/Consul%3A%3AAPI%3A%3ASession).
 
 ## acl
 
-Access control API. See [Consul::API::ACL](https://metacpan.org/pod/Consul::API::ACL).
+Access control API. See [Consul::API::ACL](https://metacpan.org/pod/Consul%3A%3AAPI%3A%3AACL).
 
 ## event
 
-User event API. See [Consul::API::Event](https://metacpan.org/pod/Consul::API::Event).
+User event API. See [Consul::API::Event](https://metacpan.org/pod/Consul%3A%3AAPI%3A%3AEvent).
 
 ## status
 
-System status API. See [Consul::API::Status](https://metacpan.org/pod/Consul::API::Status).
+System status API. See [Consul::API::Status](https://metacpan.org/pod/Consul%3A%3AAPI%3A%3AStatus).
 
 # METHOD OPTIONS
 
@@ -238,7 +238,7 @@ See the Consul API docs for more information.
 
 # SEE ALSO
 
-- [AnyEvent::Consul](https://metacpan.org/pod/AnyEvent::Consul) - a wrapper providing asynchronous operation
+- [AnyEvent::Consul](https://metacpan.org/pod/AnyEvent%3A%3AConsul) - a wrapper providing asynchronous operation
 - [https://www.consul.io/docs/agent/http.html](https://www.consul.io/docs/agent/http.html) - Consul HTTP API documentation
 
 # SUPPORT
