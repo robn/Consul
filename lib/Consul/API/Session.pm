@@ -82,7 +82,7 @@ has name         => ( is => 'ro', isa => Str,                      init_arg => '
 has behavior     => ( is => 'ro', isa => Enum[qw(release delete)], init_arg => 'Behavior',    required => 1 );
 has ttl          => ( is => 'ro', isa => Str,                      init_arg => 'TTL',         required => 1 );
 has node         => ( is => 'ro', isa => Str,                      init_arg => 'Node',        required => 1 );
-has checks       => ( is => 'ro', isa => ArrayRef[Str],            init_arg => 'Checks',      required => 1 );
+has checks       => ( is => 'ro', isa => ArrayRef[Str],            init_arg => 'Checks',                    );
 has lock_delay   => ( is => 'ro', isa => Num,                      init_arg => 'LockDelay',   required => 1 );
 has create_index => ( is => 'ro', isa => Int,                      init_arg => 'CreateIndex', required => 1 );
 
